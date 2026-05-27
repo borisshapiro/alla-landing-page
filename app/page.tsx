@@ -134,10 +134,19 @@ function Chevron({ open }: { open: boolean }) {
 // ── Animated counter ─────────────────────────────────────────────────────────
 // Parses strings like "20+ yrs", "< 2 weeks", "3 continents"
 // and counts the numeric portion up from 0 when first visible.
-function AnimatedNumber({ value, reduceMotion }: { value: string; reduceMotion: boolean | null }) {
+// splitUnit=true: renders the suffix on a separate smaller line (for stat cards).
+function AnimatedNumber({
+  value,
+  reduceMotion,
+  splitUnit = false,
+}: {
+  value: string;
+  reduceMotion: boolean | null;
+  splitUnit?: boolean;
+}) {
   const match = value.match(/^([^0-9]*)(\d+)(.*)$/);
   const ref = useRef<HTMLSpanElement>(null);
-  const [count, setCount] = useState<number>(match ? 0 : 0);
+  const [count, setCount] = useState<number>(0);
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
@@ -170,6 +179,24 @@ function AnimatedNumber({ value, reduceMotion }: { value: string; reduceMotion: 
 
   if (!match) return <span ref={ref}>{value}</span>;
   const [, prefix, , suffix] = match;
+  const unit = suffix.trim();
+
+  // Split display: large number line + smaller unit line
+  if (splitUnit) {
+    return (
+      <>
+        <span ref={ref} className="text-3xl font-extrabold leading-none tracking-tight text-white">
+          {prefix}{count}
+        </span>
+        {unit && (
+          <span className="mt-1 text-xs font-semibold uppercase tracking-widest text-brand-300">
+            {unit}
+          </span>
+        )}
+      </>
+    );
+  }
+
   return <span ref={ref}>{prefix}{count}{suffix}</span>;
 }
 
@@ -450,25 +477,28 @@ export default function Home() {
         {/* Top gradient */}
         <div className="absolute inset-x-0 top-0 -z-10 h-80 bg-gradient-to-b from-brand-500/30 via-brand-600/10 to-transparent blur-3xl" />
 
-        {/* Floating ambient orbs — slow, subtle, adds depth */}
+        {/* Floating ambient orbs — no -z-10 (that buries them behind the bg); source order keeps them under content */}
         {!reduceMotion && (
           <>
+            {/* Large violet orb — right side of hero card */}
             <motion.div
-              animate={{ y: [0, -44, 0], x: [0, 22, 0], scale: [1, 1.06, 1] }}
+              animate={{ y: [0, -44, 0], x: [0, 22, 0], scale: [1, 1.07, 1] }}
               transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute right-[18%] top-24 -z-10 h-[26rem] w-[26rem] rounded-full bg-brand-500/12 blur-[90px]"
+              className="pointer-events-none absolute right-[12%] top-16 h-[30rem] w-[30rem] rounded-full bg-brand-500/30 blur-[72px]"
               aria-hidden="true"
             />
+            {/* Mid orb — lower-left */}
             <motion.div
-              animate={{ y: [0, 36, 0], x: [0, -28, 0], scale: [1, 1.09, 1] }}
+              animate={{ y: [0, 36, 0], x: [0, -28, 0], scale: [1, 1.1, 1] }}
               transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut', delay: 3.5 }}
-              className="absolute bottom-0 left-[22%] -z-10 h-[20rem] w-[20rem] rounded-full bg-brand-700/14 blur-[70px]"
+              className="pointer-events-none absolute bottom-0 left-[18%] h-[22rem] w-[22rem] rounded-full bg-brand-600/22 blur-[60px]"
               aria-hidden="true"
             />
+            {/* Small accent orb — far left edge */}
             <motion.div
-              animate={{ y: [0, -20, 0], x: [0, 14, 0] }}
+              animate={{ y: [0, -24, 0], x: [0, 16, 0] }}
               transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-              className="absolute left-[8%] top-1/3 -z-10 h-48 w-48 rounded-full bg-brand-400/8 blur-[50px]"
+              className="pointer-events-none absolute left-[4%] top-1/3 h-56 w-56 rounded-full bg-brand-400/18 blur-[44px]"
               aria-hidden="true"
             />
           </>
@@ -567,18 +597,20 @@ export default function Home() {
                       : 'Senior R&D management professional with decades of experience leading global engineering teams, game studios and software organizations across international markets.'}
                 </p>
 
-                {/* Outcome-focused stats */}
+                {/* Outcome-focused stats — number first (big), unit accent, label last (small) */}
                 <div className="grid grid-cols-3 gap-3">
                   {pageContent.hero.stats.map((stat) => (
                     <div
                       key={stat.label}
-                      className="rounded-2xl border border-slate-700/60 bg-brand-900/70 p-4"
+                      className="flex flex-col items-center rounded-2xl border border-white/8 bg-brand-900/60 px-2 py-5 text-center"
                     >
-                      <p className="text-xs uppercase tracking-[0.14em] text-slate-500">
+                      <AnimatedNumber
+                        value={stat.value}
+                        reduceMotion={reduceMotion}
+                        splitUnit
+                      />
+                      <p className="mt-3 text-[10px] font-medium leading-snug text-slate-500 sm:text-xs">
                         {stat.label}
-                      </p>
-                      <p className="mt-2 text-xl font-extrabold leading-tight text-white">
-                        <AnimatedNumber value={stat.value} reduceMotion={reduceMotion} />
                       </p>
                     </div>
                   ))}
