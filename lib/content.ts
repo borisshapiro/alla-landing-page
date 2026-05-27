@@ -152,7 +152,12 @@ export const content = {
     },
     logoBar: {
       label: 'Leaders from these organizations trust Alla',
-      companies: ['eToro', 'Playtika', 'Amdocs'],
+      companies: ['eToro', 'Playtika', 'Amdocs', 'NICE', '4CAST', 'LifeWard', 'TripEx', 'Razore Engineering', 'Infinity Broker House'],
+    },
+    legal: {
+      accessibility: 'Accessibility',
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Use',
     },
   },
 
@@ -301,7 +306,12 @@ export const content = {
     },
     logoBar: {
       label: 'מנהיגים מהארגונים האלה סומכים על אלה',
-      companies: ['eToro', 'Playtika', 'Amdocs'],
+      companies: ['eToro', 'Playtika', 'Amdocs', 'NICE', '4CAST', 'LifeWard', 'TripEx', 'Razore Engineering', 'Infinity Broker House'],
+    },
+    legal: {
+      accessibility: 'הצהרת נגישות',
+      privacy: 'מדיניות פרטיות',
+      terms: 'תנאי שימוש',
     },
   },
 
@@ -450,7 +460,12 @@ export const content = {
     },
     logoBar: {
       label: 'Руководители этих организаций доверяют Алле',
-      companies: ['eToro', 'Playtika', 'Amdocs'],
+      companies: ['eToro', 'Playtika', 'Amdocs', 'NICE', '4CAST', 'LifeWard', 'TripEx', 'Razore Engineering', 'Infinity Broker House'],
+    },
+    legal: {
+      accessibility: 'Доступность',
+      privacy: 'Политика конфиденциальности',
+      terms: 'Условия использования',
     },
   },
 } as const;

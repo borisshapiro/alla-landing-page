@@ -46,7 +46,7 @@ function Avatar({
 }: {
   src: string;
   name: string;
-  size?: 'md' | 'lg';
+  size?: 'md' | 'lg' | 'xl';
 }) {
   const [error, setError] = useState(false);
   const initials = name
@@ -55,9 +55,9 @@ function Avatar({
     .join('')
     .slice(0, 2)
     .toUpperCase();
-  const dims = size === 'lg' ? 'h-24 w-24' : 'h-12 w-12';
-  const textSize = size === 'lg' ? 'text-2xl' : 'text-sm';
-  const ring = size === 'lg' ? 'ring-4' : 'ring-2';
+  const dims = size === 'xl' ? 'h-32 w-32' : size === 'lg' ? 'h-24 w-24' : 'h-12 w-12';
+  const textSize = size === 'xl' ? 'text-3xl' : size === 'lg' ? 'text-2xl' : 'text-sm';
+  const ring = size === 'xl' ? 'ring-4' : size === 'lg' ? 'ring-4' : 'ring-2';
 
   if (error) {
     return (
@@ -76,8 +76,8 @@ function Avatar({
         src={src}
         alt={name}
         fill
-        className="object-cover"
-        sizes={size === 'lg' ? '96px' : '48px'}
+        className="object-cover object-top"
+        sizes={size === 'xl' ? '128px' : size === 'lg' ? '96px' : '48px'}
         onError={() => setError(true)}
       />
     </div>
@@ -239,10 +239,11 @@ export default function Home() {
           >
             <CrownLogo className="h-8 w-8 text-brand-400" />
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.22em] text-white">
+              {/* Name hidden on smallest screens to keep room for lang switcher */}
+              <p className="hidden text-sm font-bold uppercase tracking-[0.22em] text-white sm:block">
                 Alla Shapiro
               </p>
-              <p className="hidden text-xs text-slate-400 sm:block">
+              <p className="hidden text-xs text-slate-400 lg:block">
                 RNDQueen · Fractional VP R&D
               </p>
             </div>
@@ -388,26 +389,7 @@ export default function Home() {
                   </a>
                 ))}
               </nav>
-              <div className="mt-8 flex gap-2">
-                {languages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    type="button"
-                    onClick={() => {
-                      setLanguage(lang.code as LanguageCode);
-                      setMobileNavOpen(false);
-                    }}
-                    aria-pressed={language === lang.code}
-                    className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                      language === lang.code
-                        ? 'bg-brand-500 text-white'
-                        : 'bg-brand-800 text-slate-300 hover:text-white'
-                    }`}
-                  >
-                    {lang.label}
-                  </button>
-                ))}
-              </div>
+              {/* Language switching is in the header bar — always visible outside this drawer */}
             </motion.div>
           </>
         )}
@@ -477,38 +459,51 @@ export default function Home() {
               animate="visible"
               variants={fadeUp}
               transition={reduceMotion ? {} : { delay: 0.22, duration: 0.55, ease: 'easeOut' }}
-              className="grid place-items-center rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-glow shadow-brand-500/20 backdrop-blur-xl sm:p-10 lg:w-[38rem]"
+              className="rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-glow shadow-brand-500/20 backdrop-blur-xl sm:p-10 lg:w-[38rem]"
             >
-              <div className="w-full space-y-5 text-center">
-                <p className="text-xs uppercase tracking-[0.28em] text-brand-300">
+              <div className="space-y-6">
+                {/* Photo + name — horizontal, left-aligned */}
+                <div className="flex items-center gap-6">
+                  <Avatar src="/alla-shapiro.png" name="Alla Shapiro" size="xl" />
+                  <div className="min-w-0">
+                    <p className="text-xs uppercase tracking-[0.22em] text-brand-300">
+                      {isRTL ? 'VP R&D שבריר · RNDQueen' : 'Fractional VP R&D · RNDQueen'}
+                    </p>
+                    <h2 className="mt-2 text-2xl font-extrabold leading-tight text-white sm:text-3xl">
+                      Alla Shapiro
+                    </h2>
+                    <p className="mt-1.5 text-sm text-slate-400">
+                      {isRTL
+                        ? 'שותפה ניהולית מהימנה'
+                        : language === 'ru'
+                          ? 'Надёжный партнёр-руководитель'
+                          : 'Trusted executive partner'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Short bio */}
+                <p className="text-sm leading-6 text-slate-400">
                   {isRTL
-                    ? 'שותפה ניהולית מהימנה'
+                    ? 'מקצוענית ניהול R&D בכירה עם עשרות שנות ניסיון בהובלת צוותי הנדסה גלובליים, סטודיות גיים וארגוני תוכנה ברחבי העולם.'
                     : language === 'ru'
-                      ? 'Надёжный партнёр-руководитель'
-                      : 'Trusted executive partner'}
+                      ? 'Опытный R&D руководитель с десятилетиями опыта в управлении глобальными инженерными командами, игровыми студиями и программными организациями.'
+                      : 'Senior R&D management professional with decades of experience leading global engineering teams, game studios and software organizations across international markets.'}
                 </p>
 
-                <div className="mx-auto">
-                  <Avatar src="/alla-shapiro.png" name="Alla Shapiro" size="lg" />
-                </div>
-
-                <div>
-                  <h2 className="text-xl font-bold text-white">Alla Shapiro</h2>
-                  <p className="mt-1 text-xs text-brand-300 uppercase tracking-[0.18em]">
-                    Fractional VP R&D · RNDQueen
-                  </p>
-                </div>
-
+                {/* Outcome-focused stats */}
                 <div className="grid grid-cols-3 gap-3">
                   {pageContent.hero.stats.map((stat) => (
                     <div
                       key={stat.label}
-                      className="rounded-2xl border border-slate-700/80 bg-brand-900/70 p-4 text-left"
+                      className="rounded-2xl border border-slate-700/60 bg-brand-900/70 p-4"
                     >
-                      <p className="text-xs uppercase tracking-[0.16em] text-slate-500">
+                      <p className="text-xs uppercase tracking-[0.14em] text-slate-500">
                         {stat.label}
                       </p>
-                      <p className="mt-2 text-lg font-bold leading-tight text-white">{stat.value}</p>
+                      <p className="mt-2 text-xl font-extrabold leading-tight text-white">
+                        {stat.value}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -524,12 +519,12 @@ export default function Home() {
           <p className="mb-5 text-center text-xs uppercase tracking-[0.28em] text-slate-500">
             {pageContent.logoBar.label}
           </p>
-          {/* TODO: replace with <Image> logos once /public/logos/etoro.svg etc. are added */}
-          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-3">
+          {/* TODO: replace text with <Image> logos once SVGs are in /public/logos/ */}
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:gap-x-10">
             {pageContent.logoBar.companies.map((co) => (
               <span
                 key={co}
-                className="text-xl font-bold tracking-tight text-slate-500 transition hover:text-slate-300"
+                className="text-base font-bold tracking-tight text-slate-500 transition hover:text-slate-300 sm:text-lg"
               >
                 {co}
               </span>
@@ -910,35 +905,49 @@ export default function Home() {
 
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
       <footer className="border-t border-white/10 bg-brand-950/90 py-10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between lg:px-8">
-          <p>{pageContent.footer.copyright}</p>
-          <nav className="flex items-center gap-5" aria-label="Footer links">
-            <a
-              href={pageContent.footer.linkedInHref}
-              target="_blank"
-              rel="noreferrer"
-              className="transition hover:text-white"
-              aria-label="LinkedIn profile (opens in new tab)"
-            >
-              LinkedIn
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex flex-col gap-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+            <p>{pageContent.footer.copyright}</p>
+            <nav className="flex flex-wrap items-center gap-5" aria-label="Footer links">
+              <a
+                href={pageContent.footer.linkedInHref}
+                target="_blank"
+                rel="noreferrer"
+                className="transition hover:text-white"
+                aria-label="LinkedIn profile (opens in new tab)"
+              >
+                LinkedIn
+              </a>
+              <a
+                href={CALENDLY_INTRO_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="transition hover:text-white"
+                aria-label="Book a call on Calendly (opens in new tab)"
+              >
+                Calendly
+              </a>
+              <a
+                href={pageContent.footer.emailHref}
+                className="transition hover:text-white"
+                aria-label="Send email"
+              >
+                Email
+              </a>
+            </nav>
+          </div>
+          {/* Legal links */}
+          <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-white/8 pt-6 text-xs text-slate-600">
+            <a href="/accessibility" className="transition hover:text-slate-400">
+              {pageContent.legal.accessibility}
             </a>
-            <a
-              href={CALENDLY_INTRO_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="transition hover:text-white"
-              aria-label="Book a call on Calendly (opens in new tab)"
-            >
-              Calendly
+            <a href="/privacy" className="transition hover:text-slate-400">
+              {pageContent.legal.privacy}
             </a>
-            <a
-              href={pageContent.footer.emailHref}
-              className="transition hover:text-white"
-              aria-label="Send email"
-            >
-              Email
+            <a href="/terms" className="transition hover:text-slate-400">
+              {pageContent.legal.terms}
             </a>
-          </nav>
+          </div>
         </div>
       </footer>
 
