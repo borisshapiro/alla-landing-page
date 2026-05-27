@@ -17,78 +17,78 @@ export const content = {
       nav: ['Challenges', 'Offerings', 'Why work with me', 'Process', 'FAQ', 'Contact'],
     },
     hero: {
-      title: 'Fractional VP R&D, game studio advisory, and team scaling for product organizations.',
+      title: 'Senior R&D leadership. No full-time hire required.',
       subtitle:
-        'Helping Israeli and global tech teams accelerate execution, build resilient engineering organizations, and deliver trusted R&D leadership for growth.',
-      ctaIntro: 'Book intro call',
-      ctaConsult: 'Book consult hour',
+        '20+ years of hands-on R&D leadership — available to your team on a fractional basis. Structured, fast, and focused on delivery.',
+      ctaIntro: 'Book My Free Intro Call',
+      ctaConsult: 'Book a Strategy Session',
     },
     offerings: [
       {
         title: 'Fractional VP R&D',
         description:
-          'Interim leadership that drives product delivery, engineering alignment, and team performance without a full-time commitment.',
+          'Your teams aligned, your delivery unblocked — senior R&D ownership without the full-time cost.',
       },
       {
         title: 'Game Studio Advisory',
         description:
-          'Strategic guidance for game teams, studios, and interactive product organizations focused on growth and execution.',
+          'Strategic guidance for studios and interactive product orgs ready to scale and ship.',
       },
       {
         title: 'Team Scaling',
         description:
-          'Build and coach high-performing R&D teams with the right structure, process, and talent for fast-moving environments.',
+          'Build high-performing R&D teams with the right structure and process for your growth stage.',
       },
       {
         title: 'R&D Leadership',
         description:
-          'Operational governance, technical strategy, and cross-disciplinary coordination for product-driven organizations.',
+          'End-to-end R&D ownership: technical strategy, cross-team coordination, and governance that actually scales.',
       },
     ],
     challenges: {
-      title: 'Common R&D challenges',
+      title: 'Sound familiar?',
       subtitle:
-        'Senior teams and decision-makers often need clarity, speed, and execution without adding permanent overhead.',
+        'Most growing tech companies hit the same wall — they need senior R&D leadership, but a full-time hire feels too early, too expensive, or too slow.',
       points: [
-        'Unclear R&D direction or inconsistent execution across teams.',
-        'Need for experienced leadership without committing to a full-time hire.',
-        'Scaling engineering and product teams while preserving delivery quality.',
-        'Aligning remote and multicultural teams with business objectives.',
+        'Your teams are busy but delivery is inconsistent. No one owns the full R&D picture.',
+        'You need a VP R&D yesterday — but a full-time hire takes months and costs a fortune.',
+        "You're growing fast, but adding people without structure is creating chaos, not speed.",
+        'Your engineering, product, and business teams speak different languages — and the gaps are costing you.',
       ],
     },
     why: {
-      title: 'Leadership that combines global R&D experience with practical delivery.',
+      title: '20+ years across software, gaming, and enterprise — on 3 continents.',
       description:
-        'From large international corporations to agile game studios and software houses, I bring structure, clarity and momentum to R&D teams that need rapid alignment and measurable outcomes.',
+        "From Fortune 500 IT organizations to lean game studios, I've scaled teams, fixed broken processes, and delivered measurable results — globally and in Israel. I know what works, and what doesn't.",
       highlights: [
         {
-          title: 'Trusted background',
-          description: 'Cross-disciplinary leadership in engineering, product, game development, and operational excellence.',
+          title: 'Deep cross-industry expertise',
+          description: 'Cross-disciplinary leadership in engineering, product, game development, and operational excellence across global organizations.',
         },
         {
-          title: 'Remote & local',
-          description: 'Flexible remote partnerships with the ability to engage on-premises in Israel when geography permits.',
+          title: 'Flexible — remote or on-site',
+          description: 'Built for distributed teams. Remote-first by default, with on-site availability for Israel-based organizations when it matters.',
         },
       ],
     },
     experience: [
-      'Global R&D leadership across software and gaming organizations.',
-      'Building teams, processes, and governance for product execution.',
-      'Fractional leadership for organizations that need senior experience quickly.',
-      'Aligning engineering, product, and business stakeholders for faster delivery.',
+      'Senior R&D leadership at global tech, gaming, and enterprise organizations.',
+      'Scaled engineering teams from startup to enterprise — with the processes to match.',
+      'Available as fractional VP R&D — senior-level output, on your schedule and budget.',
+      'Closed the gap between engineering, product, and business — turning strategy into shipped product.',
     ],
     process: [
       {
         title: 'Intro call',
-        description: 'Understand your goals, challenges, and the right engagement path.',
+        description: "30 minutes. We map your R&D challenges and decide if there's a fit.",
       },
       {
         title: 'Assessment & proposal',
-        description: 'Receive a clear plan for leadership support, advisory scope, or team enablement.',
+        description: 'You get a clear plan: scope, timeline, and engagement model tailored to your needs.',
       },
       {
         title: 'Start working',
-        description: 'Begin collaboration fast with focused, executive-level delivery.',
+        description: 'We move fast. Most engagements are live within 2 weeks of the first call.',
       },
     ],
     testimonials: [

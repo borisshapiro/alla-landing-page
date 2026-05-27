@@ -161,23 +161,26 @@ export default function Home() {
                   {pageContent.hero.subtitle}
                 </p>
               </div>
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <a
-                  href={CALENDLY_URL}
-                  className="inline-flex w-full items-center justify-center rounded-full bg-brand-500 px-7 py-3 text-sm font-semibold text-white shadow-glow shadow-brand-500/25 transition hover:bg-brand-400 sm:w-auto"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {pageContent.hero.ctaIntro}
-                </a>
-                <a
-                  href={CALENDLY_URL}
-                  className="inline-flex w-full items-center justify-center rounded-full border border-slate-700 bg-slate-950/90 px-7 py-3 text-sm font-semibold text-slate-100 transition hover:border-brand-500/60 sm:w-auto"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {pageContent.hero.ctaConsult}
-                </a>
+              <div className="space-y-3">
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  <a
+                    href={CALENDLY_URL}
+                    className="inline-flex w-full items-center justify-center rounded-full bg-brand-500 px-7 py-3 text-sm font-semibold text-white shadow-glow shadow-brand-500/25 transition hover:bg-brand-400 sm:w-auto"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {pageContent.hero.ctaIntro}
+                  </a>
+                  <a
+                    href={CALENDLY_URL}
+                    className="inline-flex w-full items-center justify-center rounded-full border border-slate-700 bg-slate-950/90 px-7 py-3 text-sm font-semibold text-slate-100 transition hover:border-brand-500/60 sm:w-auto"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {pageContent.hero.ctaConsult}
+                  </a>
+                </div>
+                <p className="text-xs text-slate-500">Free 30-min call · No commitment · Available remotely</p>
               </div>
             </motion.div>
 
@@ -254,12 +257,12 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
             <div className="space-y-6">
-              <p className="text-sm uppercase tracking-[0.28em] text-brand-300">How I help teams</p>
+              <p className="text-sm uppercase tracking-[0.28em] text-brand-300">Here's how I fix it</p>
               <h2 className="text-3xl font-semibold text-white sm:text-4xl">
-                Practical leadership for high-growth R&D organizations.
+                Hands-on R&D leadership that moves at your speed.
               </h2>
               <p className="max-w-xl text-lg leading-8 text-slate-300">
-                I partner with product and technology leaders to turn strategy into execution, reduce risk in scaling engineering organizations, and deliver team readiness for real business outcomes.
+                I plug into your organization and start delivering in days, not months. No long onboarding — just structured leadership focused on the outcomes you need.
               </p>
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -285,7 +288,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
             <div className="space-y-6">
-              <p className="text-sm uppercase tracking-[0.28em] text-brand-300">Why choose this support</p>
+              <p className="text-sm uppercase tracking-[0.28em] text-brand-300">Why work with Alla</p>
               <h2 className="text-3xl font-semibold text-white sm:text-4xl">{pageContent.why.title}</h2>
               <p className="max-w-xl text-lg leading-8 text-slate-300">{pageContent.why.description}</p>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -413,29 +416,32 @@ export default function Home() {
           <div className="rounded-[2rem] border border-white/10 bg-brand-900/70 p-10 shadow-xl shadow-black/20 sm:p-14">
             <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-3xl space-y-5">
-                <p className="text-sm uppercase tracking-[0.28em] text-brand-300">Ready to talk</p>
-                <h2 className="text-3xl font-semibold text-white sm:text-4xl">Book an intro call or consultation session.</h2>
+                <p className="text-sm uppercase tracking-[0.28em] text-brand-300">Let’s talk</p>
+                <h2 className="text-3xl font-semibold text-white sm:text-4xl">Your R&D challenges won’t solve themselves.</h2>
                 <p className="text-lg leading-8 text-slate-300">
-                  Let’s explore how fractional R&D leadership, advisory, or team scaling can accelerate your next product effort.
+                  Book a free 30-minute intro call. No pitch, no commitment — just an honest conversation about your team’s needs and whether I can help.
                 </p>
               </div>
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <a
-                  href={CALENDLY_URL}
-                  className="inline-flex items-center justify-center rounded-full bg-brand-500 px-8 py-4 text-sm font-semibold text-white shadow-glow shadow-brand-500/25 transition hover:bg-brand-400"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {pageContent.hero.ctaIntro}
-                </a>
-                <a
-                  href={CALENDLY_URL}
-                  className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-950/90 px-8 py-4 text-sm font-semibold text-slate-100 transition hover:border-brand-500/60"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {pageContent.hero.ctaConsult}
-                </a>
+              <div className="space-y-3">
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  <a
+                    href={CALENDLY_URL}
+                    className="inline-flex items-center justify-center rounded-full bg-brand-500 px-8 py-4 text-sm font-semibold text-white shadow-glow shadow-brand-500/25 transition hover:bg-brand-400"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {pageContent.hero.ctaIntro}
+                  </a>
+                  <a
+                    href={CALENDLY_URL}
+                    className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-950/90 px-8 py-4 text-sm font-semibold text-slate-100 transition hover:border-brand-500/60"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {pageContent.hero.ctaConsult}
+                  </a>
+                </div>
+                <p className="text-xs text-slate-500">Free 30-min call · No pitch · No commitment</p>
               </div>
             </div>
           </div>
