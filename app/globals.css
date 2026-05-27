@@ -45,6 +45,12 @@ section[id] {
   color: white;
 }
 
+/* ─── Marquee ticker ────────────────────────────────────────────────────── */
+/* Pause on hover for better readability */
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
 /* ─── Accessibility controller overrides ────────────────────────────────────
    Applied as classes on <html> by AccessibilityController.tsx.
    Use !important so they override component-level Tailwind utilities.        */

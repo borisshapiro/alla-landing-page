@@ -24,6 +24,15 @@ const config: Config = {
         glow: '0 20px 60px rgba(113, 83, 196, 0.18)',
         'glow-sm': '0 8px 32px rgba(113, 83, 196, 0.22)',
       },
+      animation: {
+        marquee: 'marquee 32s linear infinite',
+      },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+      },
     },
   },
   plugins: [],

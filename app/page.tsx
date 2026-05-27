@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion, useScroll, type Variants } from 'framer-motion';
 import { content, languages, type LanguageCode } from '../lib/content';
 
 const CALENDLY_INTRO_URL = 'https://calendly.com/allsha/30-minutes-with-alla';
@@ -131,6 +131,48 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
+// ── Animated counter ─────────────────────────────────────────────────────────
+// Parses strings like "20+ yrs", "< 2 weeks", "3 continents"
+// and counts the numeric portion up from 0 when first visible.
+function AnimatedNumber({ value, reduceMotion }: { value: string; reduceMotion: boolean | null }) {
+  const match = value.match(/^([^0-9]*)(\d+)(.*)$/);
+  const ref = useRef<HTMLSpanElement>(null);
+  const [count, setCount] = useState<number>(match ? 0 : 0);
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    if (!match || started) return;
+    const target = parseInt(match[2], 10);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setStarted(true);
+        observer.disconnect();
+        if (reduceMotion) { setCount(target); return; }
+        const duration = 1100;
+        let startTime: number | null = null;
+        const step = (ts: number) => {
+          if (!startTime) startTime = ts;
+          const progress = Math.min((ts - startTime) / duration, 1);
+          // ease-out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setCount(Math.round(eased * target));
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      },
+      { threshold: 0.6 },
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!match) return <span ref={ref}>{value}</span>;
+  const [, prefix, , suffix] = match;
+  return <span ref={ref}>{prefix}{count}{suffix}</span>;
+}
+
 // ── Main page ────────────────────────────────────────────────────────────────
 export default function Home() {
   const [language, setLanguage] = useState<LanguageCode>('en');
@@ -141,6 +183,7 @@ export default function Home() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const reduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
   const closeCalendlyRef = useRef<HTMLButtonElement>(null);
   const pageContent = content[language];
   const isRTL = language === 'he';
@@ -223,6 +266,13 @@ export default function Home() {
       className="min-h-screen bg-brand-950 pb-24 text-slate-100 md:pb-0"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
+      {/* ── SCROLL PROGRESS ────────────────────────────────────────────────── */}
+      <motion.div
+        className="fixed left-0 top-0 right-0 z-50 h-[2px] origin-left bg-gradient-to-r from-brand-600 via-brand-400 to-brand-200"
+        style={{ scaleX: scrollYProgress }}
+        aria-hidden="true"
+      />
+
       {/* ── HEADER ─────────────────────────────────────────────────────────── */}
       <motion.header
         initial="hidden"
@@ -397,7 +447,33 @@ export default function Home() {
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
+        {/* Top gradient */}
         <div className="absolute inset-x-0 top-0 -z-10 h-80 bg-gradient-to-b from-brand-500/30 via-brand-600/10 to-transparent blur-3xl" />
+
+        {/* Floating ambient orbs — slow, subtle, adds depth */}
+        {!reduceMotion && (
+          <>
+            <motion.div
+              animate={{ y: [0, -44, 0], x: [0, 22, 0], scale: [1, 1.06, 1] }}
+              transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute right-[18%] top-24 -z-10 h-[26rem] w-[26rem] rounded-full bg-brand-500/12 blur-[90px]"
+              aria-hidden="true"
+            />
+            <motion.div
+              animate={{ y: [0, 36, 0], x: [0, -28, 0], scale: [1, 1.09, 1] }}
+              transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut', delay: 3.5 }}
+              className="absolute bottom-0 left-[22%] -z-10 h-[20rem] w-[20rem] rounded-full bg-brand-700/14 blur-[70px]"
+              aria-hidden="true"
+            />
+            <motion.div
+              animate={{ y: [0, -20, 0], x: [0, 14, 0] }}
+              transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+              className="absolute left-[8%] top-1/3 -z-10 h-48 w-48 rounded-full bg-brand-400/8 blur-[50px]"
+              aria-hidden="true"
+            />
+          </>
+        )}
+
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-8">
           <div className="flex flex-col gap-14 lg:flex-row lg:items-center lg:justify-between">
             {/* Left — headline + CTAs */}
@@ -502,7 +578,7 @@ export default function Home() {
                         {stat.label}
                       </p>
                       <p className="mt-2 text-xl font-extrabold leading-tight text-white">
-                        {stat.value}
+                        <AnimatedNumber value={stat.value} reduceMotion={reduceMotion} />
                       </p>
                     </div>
                   ))}
@@ -513,24 +589,45 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── LOGO BAR ───────────────────────────────────────────────────────── */}
+      {/* ── LOGO BAR — animated marquee ticker ────────────────────────────── */}
       <div className="border-t border-white/8 bg-brand-900 py-8">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <p className="mb-5 text-center text-xs uppercase tracking-[0.28em] text-slate-500">
-            {pageContent.logoBar.label}
-          </p>
-          {/* TODO: replace text with <Image> logos once SVGs are in /public/logos/ */}
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:gap-x-10">
-            {pageContent.logoBar.companies.map((co) => (
-              <span
-                key={co}
-                className="text-base font-bold tracking-tight text-slate-500 transition hover:text-slate-300 sm:text-lg"
-              >
-                {co}
-              </span>
-            ))}
+        <p className="mb-6 px-6 text-center text-xs uppercase tracking-[0.28em] text-slate-500">
+          {pageContent.logoBar.label}
+        </p>
+        {reduceMotion ? (
+          /* Static list for users who prefer reduced motion */
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+              {pageContent.logoBar.companies.map((co) => (
+                <span key={co} className="text-sm font-bold text-slate-500 transition hover:text-slate-300">
+                  {co}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          /* Marquee: doubled items, CSS translateX(-50%) loop, fade masks */
+          <div className="relative overflow-hidden">
+            {/* Left fade */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-brand-900 to-transparent" />
+            {/* Right fade */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-brand-900 to-transparent" />
+            {/* Scrolling track — items appear twice so the loop is seamless */}
+            <div className="flex animate-marquee items-center gap-14 whitespace-nowrap">
+              {[...pageContent.logoBar.companies, ...pageContent.logoBar.companies].map((co, i) => (
+                <span
+                  key={i}
+                  className="inline-flex shrink-0 items-center gap-3 text-sm font-bold tracking-wide text-slate-500 transition-colors hover:text-slate-200"
+                >
+                  <svg viewBox="0 0 6 6" className="h-1.5 w-1.5 shrink-0 fill-brand-600/60" aria-hidden="true">
+                    <circle cx="3" cy="3" r="3" />
+                  </svg>
+                  {co}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── CHALLENGES ─────────────────────────────────────────────────────── */}
