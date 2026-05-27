@@ -11,12 +11,23 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at top, rgba(125, 92, 198, 0.16), transparent 36%),
-    radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.12), transparent 24%),
+  background: radial-gradient(circle at 15% 10%, rgba(127, 92, 198, 0.18), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(106, 77, 157, 0.10), transparent 35%),
     #080d1a;
+}
+
+/* Anchor offset for sticky header (~84px tall) */
+section[id] {
+  scroll-margin-top: 88px;
 }
 
 * {
