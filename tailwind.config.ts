@@ -25,12 +25,14 @@ const config: Config = {
         'glow-sm': '0 8px 32px rgba(113, 83, 196, 0.22)',
       },
       animation: {
-        marquee: 'marquee 28s linear infinite',
+        // 4× copies in DOM → one animation cycle = 25% of track = exactly 1 logo set.
+        // Works for any screen width because 3 remaining sets (75%) always exceed the viewport.
+        marquee: 'marquee 36s linear infinite',
       },
       keyframes: {
         marquee: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' },
+          '0%':   { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-25%)' },
         },
       },
     },

@@ -660,15 +660,15 @@ export default function Home() {
             {/* Fade masks */}
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-brand-900 to-transparent" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-brand-900 to-transparent" />
-            {/* Track — w-max makes width = content width, so translateX(-50%) = exactly one set */}
-            <div className="flex w-max animate-marquee items-center gap-16 py-1">
-              {[...LOGOS, ...LOGOS].map((logo, i) => (
+            {/* Track: 4× copies so translateX(-25%) = exactly 1 set, robust on any screen */}
+            <div className="flex w-max animate-marquee items-center gap-24 py-2">
+              {[...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS].map((logo, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={i}
                   src={logo.file}
                   alt={logo.name}
-                  className="h-8 w-auto max-w-[130px] shrink-0 object-contain brightness-0 invert opacity-45 transition-opacity duration-300 hover:opacity-80"
+                  className="h-12 w-auto max-w-[200px] shrink-0 object-contain brightness-0 invert opacity-50 transition-opacity duration-300 hover:opacity-85"
                 />
               ))}
             </div>
