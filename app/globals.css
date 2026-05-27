@@ -44,3 +44,53 @@ section[id] {
   background: rgba(124, 58, 237, 0.35);
   color: white;
 }
+
+/* ─── Accessibility controller overrides ────────────────────────────────────
+   Applied as classes on <html> by AccessibilityController.tsx.
+   Use !important so they override component-level Tailwind utilities.        */
+
+/* Font size */
+.a11y-fs-2 { font-size: 112% !important; }
+.a11y-fs-3 { font-size: 125% !important; }
+.a11y-fs-4 { font-size: 150% !important; }
+
+/* High contrast — boost contrast + brightness */
+.a11y-high-contrast body  { filter: contrast(1.9) brightness(1.05); }
+.a11y-high-contrast .a11y-grayscale body { filter: contrast(1.9) brightness(1.05) grayscale(100%); }
+
+/* Grayscale only (without contrast) */
+.a11y-grayscale:not(.a11y-high-contrast) body { filter: grayscale(100%); }
+
+/* Underline all links */
+.a11y-underline-links a { text-decoration: underline !important; text-decoration-skip-ink: auto; }
+
+/* Pause all animations / transitions */
+.a11y-pause-animations *,
+.a11y-pause-animations *::before,
+.a11y-pause-animations *::after {
+  animation-duration:       0.001ms !important;
+  animation-iteration-count: 1      !important;
+  transition-duration:      0.001ms !important;
+  scroll-behavior:          auto    !important;
+}
+
+/* Readable / dyslexia-friendly font (Arial is universally available & clear) */
+.a11y-readable-font,
+.a11y-readable-font * {
+  font-family: Arial, Helvetica, 'Liberation Sans', sans-serif !important;
+}
+
+/* Increased text spacing (WCAG 1.4.12) */
+.a11y-text-spacing * {
+  line-height:    2      !important;
+  letter-spacing: 0.12em !important;
+  word-spacing:   0.16em !important;
+}
+
+/* Bright focus ring — yellow on dark backgrounds for maximum visibility */
+.a11y-highlight-focus *:focus-visible,
+.a11y-highlight-focus *:focus {
+  outline:        4px solid #facc15 !important;
+  outline-offset: 3px               !important;
+  border-radius:  2px;
+}
