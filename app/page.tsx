@@ -110,8 +110,8 @@ function Avatar({
     .join('')
     .slice(0, 2)
     .toUpperCase();
-  const dims = size === 'xl' ? 'h-32 w-32' : size === 'lg' ? 'h-24 w-24' : 'h-12 w-12';
-  const textSize = size === 'xl' ? 'text-3xl' : size === 'lg' ? 'text-2xl' : 'text-sm';
+  const dims = size === 'xl' ? 'h-40 w-40' : size === 'lg' ? 'h-24 w-24' : 'h-12 w-12';
+  const textSize = size === 'xl' ? 'text-4xl' : size === 'lg' ? 'text-2xl' : 'text-sm';
   const ring = size === 'xl' ? 'ring-4' : size === 'lg' ? 'ring-4' : 'ring-2';
 
   if (error) {
@@ -132,8 +132,8 @@ function Avatar({
         alt={name}
         fill
         priority={priority}
-        className="object-cover object-top"
-        sizes={size === 'xl' ? '128px' : size === 'lg' ? '96px' : '48px'}
+        className={`object-cover ${size === 'xl' ? 'object-[center_10%]' : 'object-top'}`}
+        sizes={size === 'xl' ? '160px' : size === 'lg' ? '96px' : '48px'}
         onError={() => setError(true)}
       />
     </div>
