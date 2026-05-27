@@ -265,6 +265,7 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState('');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [showStickyCTA, setShowStickyCTA] = useState(true);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const closeCalendlyRef = useRef<HTMLButtonElement>(null);
@@ -314,6 +315,22 @@ export default function Home() {
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Hide sticky mobile CTA when main CTA buttons are visible on screen
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const anyVisible = entries.some((e) => e.isIntersecting);
+        setShowStickyCTA(!anyVisible);
+      },
+      { threshold: 0.1 },
+    );
+    const heroCTA = document.getElementById('hero-cta');
+    const contactCTA = document.getElementById('contact-cta');
+    if (heroCTA) observer.observe(heroCTA);
+    if (contactCTA) observer.observe(contactCTA);
+    return () => observer.disconnect();
   }, []);
 
   // Focus the modal close button when Calendly opens
@@ -599,7 +616,7 @@ export default function Home() {
                 <span className="text-xs font-medium text-amber-300">{pageContent.hero.urgency}</span>
               </div>
 
-              <div className="space-y-3">
+              <div id="hero-cta" className="space-y-3">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <button
                     onClick={() => openCalendly(CALENDLY_INTRO_URL)}
@@ -1072,7 +1089,7 @@ export default function Home() {
                       : "Book a free 30-minute intro call. No pitch, no commitment — just an honest conversation about your team's needs and whether I can help."}
                 </p>
               </div>
-              <div className="shrink-0 space-y-3">
+              <div id="contact-cta" className="shrink-0 space-y-3">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <button
                     onClick={() => openCalendly(CALENDLY_INTRO_URL)}
@@ -1149,22 +1166,34 @@ export default function Home() {
       </footer>
 
       {/* ── MOBILE STICKY CTA ──────────────────────────────────────────────── */}
-      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
-        <div className="mx-auto flex max-w-sm gap-3 rounded-full bg-brand-900/95 px-3 py-2.5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
-          <button
-            onClick={() => openCalendly(CALENDLY_INTRO_URL)}
-            className="flex-1 rounded-full bg-brand-500 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-brand-400"
+      {/* Hides automatically when hero or contact CTAs are visible on screen */}
+      <AnimatePresence>
+        {showStickyCTA && (
+          <motion.div
+            key="sticky-cta"
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="fixed bottom-4 left-4 right-4 z-40 md:hidden"
           >
-            {isRTL ? 'שיחת היכרות' : language === 'ru' ? 'Вводный звонок' : 'Free intro call'}
-          </button>
-          <button
-            onClick={() => openCalendly(CALENDLY_CONSULT_URL)}
-            className="flex-1 rounded-full border border-slate-700 px-4 py-3 text-center text-sm font-semibold text-slate-100 transition hover:border-brand-500/50"
-          >
-            {isRTL ? 'אסטרטגיה' : language === 'ru' ? 'Стратегия' : 'Strategy'}
-          </button>
-        </div>
-      </div>
+            <div className="mx-auto flex max-w-sm gap-3 rounded-full bg-brand-900/95 px-3 py-2.5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
+              <button
+                onClick={() => openCalendly(CALENDLY_INTRO_URL)}
+                className="flex-1 rounded-full bg-brand-500 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-brand-400"
+              >
+                {isRTL ? 'שיחת היכרות' : language === 'ru' ? 'Вводный звонок' : 'Free intro call'}
+              </button>
+              <button
+                onClick={() => openCalendly(CALENDLY_CONSULT_URL)}
+                className="flex-1 rounded-full border border-slate-700 px-4 py-3 text-center text-sm font-semibold text-slate-100 transition hover:border-brand-500/50"
+              >
+                {isRTL ? 'אסטרטגיה' : language === 'ru' ? 'Стратегия' : 'Strategy'}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── BACK TO TOP ────────────────────────────────────────────────────── */}
       <AnimatePresence>

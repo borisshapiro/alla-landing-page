@@ -486,21 +486,27 @@ export default function AccessibilityController() {
           }`}
           style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.45)' }}
         >
-          {/* Wheelchair / person accessibility icon */}
+          {/* Universal person accessibility icon — internationally recognised */}
           <svg
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth={1.8}
+            strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
             className="h-6 w-6"
             aria-hidden
           >
-            <circle cx="11" cy="4" r="1.5" fill="currentColor" stroke="none" />
-            <path d="M6 8h8l-1.5 6H7L5.5 8z" />
-            <path d="M7 14l-1 4h8" />
-            <path d="M14 18a4 4 0 1 0 0-4" />
+            {/* Head */}
+            <circle cx="12" cy="5" r="2" fill="currentColor" stroke="none" />
+            {/* Outstretched arms */}
+            <path d="M5 10h14" />
+            {/* Body */}
+            <path d="M12 8v6" />
+            {/* Left leg */}
+            <path d="M12 14l-3 5" />
+            {/* Right leg */}
+            <path d="M12 14l3 5" />
           </svg>
 
           {/* Active indicator dot */}

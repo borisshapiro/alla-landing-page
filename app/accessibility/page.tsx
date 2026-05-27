@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Accessibility Statement | הצהרת נגישות — RNDQueen',
+  title: 'Accessibility Statement | הצהרת נגישות | Заявление о доступности — RNDQueen',
   description: 'Accessibility statement for rndqueen.com, compliant with Israeli Web Accessibility Regulations and WCAG 2.1 AA.',
 };
 
@@ -20,8 +20,17 @@ export default function AccessibilityPage() {
 
       <main className="mx-auto max-w-4xl px-6 py-16 lg:px-8">
 
+        {/* Language jump nav */}
+        <nav className="mb-12 flex flex-wrap gap-x-4 gap-y-2 text-sm" aria-label="Jump to language section">
+          <a href="#he" className="font-semibold text-brand-400 hover:text-brand-300 transition">עברית</a>
+          <span className="text-slate-700" aria-hidden>·</span>
+          <a href="#en" className="font-semibold text-brand-400 hover:text-brand-300 transition">English</a>
+          <span className="text-slate-700" aria-hidden>·</span>
+          <a href="#ru" className="font-semibold text-brand-400 hover:text-brand-300 transition">Русский</a>
+        </nav>
+
         {/* ── HEBREW (required by Israeli law) ───────────────────────────── */}
-        <section dir="rtl" lang="he" className="mb-16" aria-label="הצהרת נגישות בעברית">
+        <section id="he" dir="rtl" lang="he" className="mb-16" aria-label="הצהרת נגישות בעברית">
           <h1 className="mb-8 text-3xl font-extrabold tracking-tight text-white">
             הצהרת נגישות — rndqueen.com
           </h1>
@@ -74,10 +83,10 @@ export default function AccessibilityPage() {
           </div>
         </section>
 
-        <hr className="border-white/10 my-12" />
+        <hr className="my-12 border-white/10" />
 
         {/* ── ENGLISH ────────────────────────────────────────────────────── */}
-        <section lang="en" aria-label="Accessibility statement in English">
+        <section id="en" lang="en" aria-label="Accessibility statement in English" className="mb-16">
           <h2 className="mb-8 text-2xl font-extrabold tracking-tight text-white">
             Accessibility Statement — rndqueen.com
           </h2>
@@ -126,6 +135,60 @@ export default function AccessibilityPage() {
             <p>This statement was last updated: <strong className="text-white">May 2026</strong>.</p>
           </div>
         </section>
+
+        <hr className="my-12 border-white/10" />
+
+        {/* ── RUSSIAN ────────────────────────────────────────────────────── */}
+        <section id="ru" lang="ru" aria-label="Заявление о доступности на русском языке">
+          <h2 className="mb-8 text-2xl font-extrabold tracking-tight text-white">
+            Заявление о доступности — rndqueen.com
+          </h2>
+
+          <div className="space-y-5 text-base leading-7 text-slate-300">
+            <p>
+              Сайт <strong className="text-white">rndqueen.com</strong> стремится обеспечить цифровую доступность для людей с ограниченными возможностями. Мы постоянно улучшаем пользовательский опыт для всех посетителей и применяем актуальные стандарты доступности.
+            </p>
+
+            <h3 className="mt-8 text-lg font-bold text-white">Уровень соответствия</h3>
+            <p>
+              Сайт соответствует требованиям <strong className="text-white">Руководства по обеспечению доступности веб-контента (WCAG) 2.1 уровня AA</strong> и израильскому стандарту SI 5568, согласно Положениям о равных правах для лиц с ограниченными возможностями (адаптация доступности услуг), 2013 г.
+            </p>
+
+            <h3 className="mt-8 text-lg font-bold text-white">Технические функции доступности</h3>
+            <ul className="space-y-2 text-slate-300">
+              <li>• Полная клавиатурная навигация по всему сайту</li>
+              <li>• Совместимость с программами экранного доступа (NVDA, JAWS, VoiceOver)</li>
+              <li>• Коэффициент контрастности цветов соответствует стандарту WCAG AA (минимум 4,5:1 для основного текста)</li>
+              <li>• Полная ARIA-разметка для всех интерактивных элементов</li>
+              <li>• Описательный альтернативный текст для всех изображений</li>
+              <li>• Учёт настройки ОС <em>prefers-reduced-motion</em> для минимизации анимаций</li>
+              <li>• Логическая иерархия заголовков (H1–H3)</li>
+              <li>• Масштабирование текста до 200% без потери содержимого</li>
+              <li>• Полная адаптивность для мобильных устройств, планшетов и компьютеров</li>
+            </ul>
+
+            <h3 className="mt-8 text-lg font-bold text-white">Известные ограничения</h3>
+            <p>
+              Виджет записи Calendly встроен как iframe стороннего сервиса и может не полностью соответствовать стандартам доступности во всех вспомогательных технологиях. Пользователи, испытывающие затруднения, могут связаться с нами напрямую по электронной почте.
+            </p>
+
+            <h3 className="mt-8 text-lg font-bold text-white">Обратная связь и контакт</h3>
+            <p>
+              Если вы обнаружили проблему с доступностью, нуждаетесь в помощи или хотите задать вопрос на тему доступности:
+            </p>
+            <p>
+              <strong className="text-white">Email:</strong>{' '}
+              <a href="mailto:alla@rndqueen.com" className="text-brand-400 underline hover:text-brand-300">
+                alla@rndqueen.com
+              </a>
+            </p>
+            <p>Мы стараемся отвечать в течение <strong className="text-white">5 рабочих дней</strong>.</p>
+
+            <h3 className="mt-8 text-lg font-bold text-white">Дата последнего обновления</h3>
+            <p>Настоящее заявление последний раз обновлено: <strong className="text-white">май 2026 г.</strong></p>
+          </div>
+        </section>
+
       </main>
 
       <footer className="border-t border-white/10 px-6 py-8 text-center text-xs text-slate-600">
