@@ -4,7 +4,7 @@
 **Live URL:** https://rndqueen.com  
 **GitHub repo:** https://github.com/borisshapiro/alla-landing-page  
 **Vercel project:** alla-landing-page (connected to GitHub, auto-deploys on push to `main`)  
-**Last updated:** 2026-05-27
+**Last updated:** 2026-05-27 (session 2)
 
 ---
 
@@ -48,43 +48,28 @@
 - `public/robots.txt` — allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended
 - `public/llms.txt` — GEO file for AI search engines (Perplexity, ChatGPT, Gemini)
 
-### Analytics (code-complete, needs env vars)
-- `@vercel/analytics` — **live immediately**, no config needed
-- `@vercel/speed-insights` — **live immediately**, no config needed
-- `@next/third-parties` GoogleAnalytics — **code in place, needs env var** (see below)
+### Analytics ✅ all live
+- `@vercel/analytics` — ✅ live, no config needed
+- `@vercel/speed-insights` — ✅ live, no config needed
+- `@next/third-parties` GoogleAnalytics — ✅ live (`NEXT_PUBLIC_GA_MEASUREMENT_ID` set in Vercel, redeployed, verified via GA4 Realtime report)
 - GA4 `calendly_open` conversion event fires on every Calendly modal open, tagged `intro_call` vs `strategy_session`
 
 ---
 
 ## 🚧 In progress — needs your action
 
-### 1. GA4 Measurement ID (BLOCKED — user hasn't completed setup)
+### 1. Google Search Console — verify + submit sitemap (NEXT UP)
 
-**Status:** GA4 property was being created but Measurement ID was never added to Vercel.  
-**Effect:** GA4 script is NOT loading on the live site. Vercel Analytics + Speed Insights ARE working.
+**Status:** Search Console property for rndqueen.com exists. GA4 is now live on the page, so verification should work.
 
 **Steps to complete:**
-1. Go to [analytics.google.com](https://analytics.google.com) → Admin → your RNDQueen property → Data Streams → Web stream → copy **Measurement ID** (`G-XXXXXXXXXX`)
-2. [vercel.com](https://vercel.com) → alla-landing-page project → **Settings** → **Environment Variables** → add:
-   - Key: `NEXT_PUBLIC_GA_MEASUREMENT_ID`
-   - Value: `G-XXXXXXXXXX` (your actual ID)
-   - Environment: ✅ Production
-3. **Deployments** tab → Redeploy latest deployment
-4. Verify: open https://rndqueen.com → View Page Source → search for `G-` → should appear in a `<script>` tag
-
-### 2. Google Search Console (BLOCKED — waiting on GA4)
-
-**Status:** Search Console property for rndqueen.com exists but is **not yet verified**.  
-**Verification method:** Google Analytics (requires GA4 to be live on the page first — complete Step 1 above first).
-
-**Steps to complete (after GA4 is live):**
 1. Go to [search.google.com/search-console](https://search.google.com/search-console) → your rndqueen.com property
-2. Click **"Google Analytics"** verification → **Verify**
+2. Click **"Google Analytics"** verification method → **Verify**
 3. After verified → left menu → **Sitemaps** → enter `https://rndqueen.com/sitemap.xml` → **Submit**
 
-### 3. GSC verification meta tag (optional, once you have the token)
+### 2. GSC verification meta tag (optional fallback)
 
-The code already supports it via env var. If you ever need to re-verify or use the HTML tag method:
+The code already supports it via env var. If the Google Analytics verification method fails for any reason:
 - Vercel → Environment Variables → add `NEXT_PUBLIC_GSC_VERIFICATION` = the `content="..."` value from the GSC HTML tag
 - Redeploy
 
@@ -153,12 +138,12 @@ brand: {
 
 ---
 
-## Env vars required in Vercel
+## Env vars in Vercel
 
 | Variable | Status | Purpose |
 |---|---|---|
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | ❌ NOT SET | GA4 tracking (get from GA4 → Data Streams) |
-| `NEXT_PUBLIC_GSC_VERIFICATION` | ❌ NOT SET | Search Console meta verification (optional) |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | ✅ SET & LIVE | GA4 tracking — verified working via Realtime report |
+| `NEXT_PUBLIC_GSC_VERIFICATION` | ⏸ NOT SET | Search Console HTML-tag fallback (optional — only needed if GA verification fails) |
 
 > **Note:** Vercel Analytics and Speed Insights work without any env vars — they use the Vercel project connection automatically.
 
@@ -183,8 +168,10 @@ git push origin main  # Vercel picks this up automatically
 
 ## Immediate next actions (priority order)
 
-1. ✅ Add `NEXT_PUBLIC_GA_MEASUREMENT_ID` to Vercel env vars → redeploy
-2. ✅ Verify Search Console via Google Analytics → submit sitemap
-3. 🔜 Update Alla's LinkedIn profile URL to https://rndqueen.com (first backlink)
-4. 🔜 Performance audit — run Lighthouse on https://rndqueen.com
-5. 🔜 Consider: testimonial author photos in `public/testimonials/` if not already present
+1. ✅ Vercel Analytics + Speed Insights — live
+2. ✅ GA4 (`NEXT_PUBLIC_GA_MEASUREMENT_ID`) — set, deployed, verified via Realtime
+3. ⏳ **Verify Search Console** via Google Analytics → submit sitemap.xml — do this first in the new session
+4. 🔜 Update Alla's LinkedIn profile URL to https://rndqueen.com (first backlink + trust signal)
+5. 🔜 Performance audit — run Lighthouse on https://rndqueen.com and address any issues
+6. 🔜 Testimonial author photos — confirm `public/testimonials/` photos exist; if not, add them
+7. 🔜 GA4 conversion goals — mark `calendly_open` as a key event in GA4 Admin → Events
