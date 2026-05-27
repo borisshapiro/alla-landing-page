@@ -5,9 +5,8 @@ import Image from 'next/image';
 import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
 import { content, languages, type LanguageCode } from '../lib/content';
 
-const CALENDLY_INTRO_URL = 'https://calendly.com/alla-rndqueen/intro';
-// TODO: create a separate Calendly event type for the strategy session and update this URL
-const CALENDLY_CONSULT_URL = 'https://calendly.com/alla-rndqueen/intro';
+const CALENDLY_INTRO_URL = 'https://calendly.com/allsha/30-minutes-with-alla';
+const CALENDLY_CONSULT_URL = 'https://calendly.com/allsha/30min';
 
 // Section IDs are language-agnostic; nav items map to these by position
 const SECTION_IDS = [
@@ -489,9 +488,8 @@ export default function Home() {
                       : 'Trusted executive partner'}
                 </p>
 
-                {/* Photo — replace the div below with <Avatar src="/alla-shapiro.jpg" name="Alla Shapiro" size="lg" /> once you add the photo to /public/ */}
-                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-brand-800 ring-4 ring-brand-500/40">
-                  <span className="text-3xl font-bold text-brand-300">AS</span>
+                <div className="mx-auto">
+                  <Avatar src="/alla-shapiro.png" name="Alla Shapiro" size="lg" />
                 </div>
 
                 <div>
@@ -1019,11 +1017,9 @@ export default function Home() {
             >
               <div className="flex items-center justify-between border-b border-white/8 px-5 py-4">
                 <p className="text-sm font-semibold text-white">
-                  {isRTL
-                    ? 'קבע פגישה עם אלה'
-                    : language === 'ru'
-                      ? 'Записаться к Алле'
-                      : 'Schedule with Alla'}
+                  {calendlyUrl === CALENDLY_CONSULT_URL
+                    ? isRTL ? 'פגישת אסטרטגיה עם אלה' : language === 'ru' ? 'Стратегическая сессия с Аллой' : 'Strategy Session with Alla'
+                    : isRTL ? 'שיחת היכרות חינם עם אלה' : language === 'ru' ? 'Бесплатная встреча с Аллой' : 'Free Intro Call with Alla'}
                 </p>
                 <button
                   ref={closeCalendlyRef}
@@ -1051,7 +1047,7 @@ export default function Home() {
               <div className="h-[calc(100svh-120px)] min-h-[680px] max-h-[860px]">
                 <iframe
                   title="Calendly booking"
-                  src={`${calendlyUrl}?embed_domain=rndqueen.com&embed_type=Inline&hide_gdpr_banner=1`}
+                  src={`${calendlyUrl}?embed_domain=rndqueen.com&embed_type=Inline&hide_gdpr_banner=1&background_color=0b1120&text_color=e2e8f0&primary_color=7f5cc6`}
                   className="h-full w-full border-0"
                   allow="camera; microphone; fullscreen; autoplay"
                 />

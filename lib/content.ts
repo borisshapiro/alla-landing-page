@@ -147,7 +147,7 @@ export const content = {
     ],
     footer: {
       copyright: '© 2026 Alla Shapiro. Available for remote and Israel-based collaborations.',
-      linkedInHref: 'https://www.linkedin.com/in/alla-shapiro',
+      linkedInHref: 'https://www.linkedin.com/in/allsha/',
       emailHref: 'mailto:alla@rndqueen.com',
     },
     logoBar: {
@@ -296,7 +296,7 @@ export const content = {
     ],
     footer: {
       copyright: '© 2026 אלה שפירו. זמינה לשיתופי פעולה מרחוק ובישראל.',
-      linkedInHref: 'https://www.linkedin.com/in/alla-shapiro',
+      linkedInHref: 'https://www.linkedin.com/in/allsha/',
       emailHref: 'mailto:alla@rndqueen.com',
     },
     logoBar: {
@@ -445,7 +445,7 @@ export const content = {
     ],
     footer: {
       copyright: '© 2026 Алла Шапиро. Доступна для удалённого и израильского сотрудничества.',
-      linkedInHref: 'https://www.linkedin.com/in/alla-shapiro',
+      linkedInHref: 'https://www.linkedin.com/in/allsha/',
       emailHref: 'mailto:alla@rndqueen.com',
     },
     logoBar: {
