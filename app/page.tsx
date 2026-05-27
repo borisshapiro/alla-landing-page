@@ -8,6 +8,28 @@ import { content, languages, type LanguageCode } from '../lib/content';
 const CALENDLY_INTRO_URL = 'https://calendly.com/allsha/30-minutes-with-alla';
 const CALENDLY_CONSULT_URL = 'https://calendly.com/allsha/30min';
 
+// ── Client logo data (language-agnostic) ─────────────────────────────────────
+// All logos served from /public/logos/ — rendered white on dark bg via CSS filter
+const LOGOS = [
+  { name: 'eToro',               file: '/logos/etoro.svg' },
+  { name: 'Amdocs',              file: '/logos/amdocs.png' },
+  { name: 'NICE',                file: '/logos/nice.png' },
+  { name: '4CAST',               file: '/logos/4cast.png' },
+  { name: 'LifeWard',            file: '/logos/lifeward.png' },
+  { name: 'TripEx',              file: '/logos/tripex.png' },
+  { name: 'Razore Engineering',  file: '/logos/razore.png' },
+  { name: 'Infinity',            file: '/logos/infinity.png' },
+  { name: 'AirDoctor',           file: '/logos/airdoctor.png' },
+  { name: 'Matrix Digital',      file: '/logos/matrix-digital.png' },
+  { name: 'Matrix Medika',       file: '/logos/matrix-medika.png' },
+  { name: 'Arilou',              file: '/logos/arilou.png' },
+  { name: 'Edusoft',             file: '/logos/edusoft.png' },
+  { name: 'Salant ID',           file: '/logos/salant-id.png' },
+  { name: 'Travel Blue',         file: '/logos/travel-blue.png' },
+  { name: 'Western Negev',       file: '/logos/western-negev.png' },
+  { name: 'Logistics NGO',       file: '/logos/logistics-ngo.png' },
+] as const;
+
 // Section IDs are language-agnostic; nav items map to these by position
 const SECTION_IDS = [
   'challenges',
@@ -621,41 +643,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── LOGO BAR — animated marquee ticker ────────────────────────────── */}
+      {/* ── LOGO BAR — animated image marquee ────────────────────────────── */}
       <div className="border-t border-white/8 bg-brand-900 py-8">
-        <p className="mb-6 px-6 text-center text-xs uppercase tracking-[0.28em] text-slate-500">
+        <p className="mb-7 px-6 text-center text-xs uppercase tracking-[0.28em] text-slate-500">
           {pageContent.logoBar.label}
         </p>
         {reduceMotion ? (
-          /* Static list for users who prefer reduced motion */
+          /* Static grid for users who prefer reduced motion */
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-              {pageContent.logoBar.companies.map((co) => (
-                <span key={co} className="text-sm font-bold text-slate-500 transition hover:text-slate-300">
-                  {co}
-                </span>
+            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+              {LOGOS.map((logo) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={logo.name}
+                  src={logo.file}
+                  alt={logo.name}
+                  className="h-7 w-auto max-w-[110px] object-contain brightness-0 invert opacity-40"
+                />
               ))}
             </div>
           </div>
         ) : (
-          /* Marquee: doubled items, CSS translateX(-50%) loop, fade masks */
+          /* Animated marquee: logos doubled for seamless CSS loop */
           <div className="relative overflow-hidden">
-            {/* Left fade */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-brand-900 to-transparent" />
-            {/* Right fade */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-brand-900 to-transparent" />
-            {/* Scrolling track — items appear twice so the loop is seamless */}
-            <div className="flex animate-marquee items-center gap-14 whitespace-nowrap">
-              {[...pageContent.logoBar.companies, ...pageContent.logoBar.companies].map((co, i) => (
-                <span
+            {/* Fade masks */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-brand-900 to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-brand-900 to-transparent" />
+            {/* Track — doubled so translateX(-50%) loops seamlessly */}
+            <div className="flex animate-marquee items-center gap-16 whitespace-nowrap py-1">
+              {[...LOGOS, ...LOGOS].map((logo, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   key={i}
-                  className="inline-flex shrink-0 items-center gap-3 text-sm font-bold tracking-wide text-slate-500 transition-colors hover:text-slate-200"
-                >
-                  <svg viewBox="0 0 6 6" className="h-1.5 w-1.5 shrink-0 fill-brand-600/60" aria-hidden="true">
-                    <circle cx="3" cy="3" r="3" />
-                  </svg>
-                  {co}
-                </span>
+                  src={logo.file}
+                  alt={logo.name}
+                  className="h-8 w-auto max-w-[130px] shrink-0 object-contain brightness-0 invert opacity-45 transition-opacity duration-300 hover:opacity-80"
+                />
               ))}
             </div>
           </div>
