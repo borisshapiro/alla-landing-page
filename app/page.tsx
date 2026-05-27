@@ -11,7 +11,6 @@ const CALENDLY_CONSULT_URL = 'https://calendly.com/allsha/30min';
 // ── Client logo data (language-agnostic) ─────────────────────────────────────
 // Only the 8 companies agreed upon for this page.
 const LOGOS = [
-  { name: 'eToro',              file: '/logos/etoro.svg' },
   { name: 'Amdocs',             file: '/logos/amdocs.png' },
   { name: 'NICE',               file: '/logos/nice.png' },
   { name: '4CAST',              file: '/logos/4cast.png' },
@@ -661,14 +660,14 @@ export default function Home() {
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-brand-900 to-transparent" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-brand-900 to-transparent" />
             {/* Track: 4× copies so translateX(-25%) = exactly 1 set, robust on any screen */}
-            <div className="flex w-max animate-marquee items-center gap-24 py-2">
+            <div className="flex w-max animate-marquee items-center gap-28 py-3">
               {[...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS].map((logo, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={i}
                   src={logo.file}
                   alt={logo.name}
-                  className="h-12 w-auto max-w-[200px] shrink-0 object-contain brightness-0 invert opacity-50 transition-opacity duration-300 hover:opacity-85"
+                  className="h-14 w-auto max-w-[220px] shrink-0 object-contain brightness-0 invert opacity-55 transition-opacity duration-300 hover:opacity-90"
                 />
               ))}
             </div>
