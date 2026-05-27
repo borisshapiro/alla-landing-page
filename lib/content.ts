@@ -93,22 +93,25 @@ export const content = {
     ],
     testimonials: [
       {
-        quote: 'TODO: Add real testimonial quote here.',
-        name: 'TODO: First Last',
-        title: 'TODO: Title',
-        company: 'TODO: Company',
+        quote:
+          'Professional "can do" approach, optimism & smile will always be her trademark. Alla is an exceptional & talented person. Any company will be lucky to have her.',
+        name: 'Ella Vidra',
+        title: 'CIO',
+        company: 'eToro',
       },
       {
-        quote: 'TODO: Add real testimonial quote here.',
-        name: 'TODO: First Last',
-        title: 'TODO: Title',
-        company: 'TODO: Company',
+        quote:
+          'From the get-go I could recognise in her very clear traits — clarity, focus, stability, and a "get it done" attitude. She is a trustworthy and professional manager and I wholeheartedly recommend her to any business.',
+        name: 'Gabi Levy',
+        title: 'Head of Project Management',
+        company: 'Amdocs IT',
       },
       {
-        quote: 'TODO: Add real testimonial quote here.',
-        name: 'TODO: First Last',
-        title: 'TODO: Title',
-        company: 'TODO: Company',
+        quote:
+          'Alla was an incredible mentor, hugely instrumental in helping me grow professionally. She created an atmosphere of trust and respect, fostering collaboration and encouraging ownership. Alla is an exceptional leader with exceptional qualities.',
+        name: 'Viktoria Okolotovich',
+        title: 'VP R&D',
+        company: 'Playtika',
       },
     ],
     faq: [
