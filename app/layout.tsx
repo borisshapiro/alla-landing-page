@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { Inter, Heebo } from 'next/font/google';
 import './globals.css';
 import AccessibilityController from '@/components/AccessibilityController';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -77,6 +80,11 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  // Set NEXT_PUBLIC_GSC_VERIFICATION in Vercel env vars once you have the
+  // HTML-tag verification code from Google Search Console.
+  ...(process.env.NEXT_PUBLIC_GSC_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION } }
+    : {}),
 };
 
 // ── Structured data (JSON-LD) ────────────────────────────────────────────────
@@ -171,6 +179,8 @@ const serviceSchema = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
   return (
     <html lang="en" className={`${inter.variable} ${heebo.variable}`}>
       <body>
@@ -184,6 +194,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
         />
+        {/* ── Analytics ─────────────────────────────────────────────────── */}
+        {/* Vercel Analytics — page views, countries, referrers; no cookies */}
+        <Analytics />
+        {/* Vercel Speed Insights — real-user Core Web Vitals (LCP, CLS, INP) */}
+        <SpeedInsights />
+        {/* Google Analytics 4 — set NEXT_PUBLIC_GA_MEASUREMENT_ID in Vercel */}
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   );

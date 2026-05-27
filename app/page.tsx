@@ -338,6 +338,15 @@ export default function Home() {
   function openCalendly(url: string) {
     setCalendlyUrl(url);
     setCalendlyOpen(true);
+    // GA4 conversion event — fires every time a user opens the booking widget
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const gtag = typeof window !== 'undefined' && (window as any).gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', 'calendly_open', {
+        cta_type: url.includes('30-minutes') ? 'intro_call' : 'strategy_session',
+        page_location: window.location.href,
+      });
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
