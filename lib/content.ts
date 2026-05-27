@@ -14,7 +14,7 @@ export const content = {
     },
     header: {
       tagline: 'R&D leadership & advisory',
-      nav: ['Offerings', 'Challenges', 'Why work with me', 'Process', 'Contact'],
+      nav: ['Challenges', 'Offerings', 'Why work with me', 'Process', 'FAQ', 'Contact'],
     },
     hero: {
       title: 'Fractional VP R&D, game studio advisory, and team scaling for product organizations.',
@@ -89,6 +89,48 @@ export const content = {
       {
         title: 'Start working',
         description: 'Begin collaboration fast with focused, executive-level delivery.',
+      },
+    ],
+    testimonials: [
+      {
+        quote: 'TODO: Add real testimonial quote here.',
+        name: 'TODO: First Last',
+        title: 'TODO: Title',
+        company: 'TODO: Company',
+      },
+      {
+        quote: 'TODO: Add real testimonial quote here.',
+        name: 'TODO: First Last',
+        title: 'TODO: Title',
+        company: 'TODO: Company',
+      },
+      {
+        quote: 'TODO: Add real testimonial quote here.',
+        name: 'TODO: First Last',
+        title: 'TODO: Title',
+        company: 'TODO: Company',
+      },
+    ],
+    faq: [
+      {
+        question: 'How quickly can we get started?',
+        answer:
+          'Most engagements kick off within 1–2 weeks of the intro call. The first step is a short discovery conversation to define scope — after that, we move fast.',
+      },
+      {
+        question: 'Is there a minimum commitment or contract length?',
+        answer:
+          'No long-term lock-in. Engagements are structured as monthly retainers with a 30-day notice period, so you stay in full control of the relationship.',
+      },
+      {
+        question: 'Can this work for a remote or distributed team?',
+        answer:
+          'Yes — most work is conducted remotely and designed to fit distributed teams. For Israel-based organizations, on-site presence is available when it adds value.',
+      },
+      {
+        question: 'How is a fractional engagement priced?',
+        answer:
+          'Pricing is based on the scope and weekly hours involved, structured as a monthly retainer. You get senior R&D leadership at a fraction of a full-time executive cost — with full flexibility to scale up or down.',
       },
     ],
     footer: {

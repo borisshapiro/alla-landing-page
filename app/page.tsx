@@ -196,6 +196,35 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CHALLENGES — pain first */}
+      <motion.section
+        id="challenges"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={fadeUp}
+        className="border-t border-white/10 py-16 lg:py-20"
+      >
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="rounded-[2rem] border border-white/10 bg-brand-950/80 p-10 shadow-xl shadow-black/10 sm:p-14">
+            <div className="grid gap-10 lg:grid-cols-[0.95fr_0.9fr] lg:items-center">
+              <div className="space-y-6">
+                <p className="text-sm uppercase tracking-[0.28em] text-brand-300">{pageContent.challenges.title}</p>
+                <h2 className="text-3xl font-semibold text-white sm:text-4xl">{pageContent.challenges.subtitle}</h2>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {pageContent.challenges.points.map((point) => (
+                  <div key={point} className="rounded-3xl border border-slate-800/90 bg-slate-950/90 p-6">
+                    <p className="text-slate-300">{point}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* OFFERINGS — solution follows the pain */}
       <motion.section
         id="offerings"
         initial="hidden"
@@ -222,33 +251,6 @@ export default function Home() {
                   <p className="mt-3 text-slate-300">{item.description}</p>
                 </article>
               ))}
-            </div>
-          </div>
-        </div>
-      </motion.section>
-
-      <motion.section
-        id="challenges"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={fadeUp}
-        className="py-16 lg:py-20"
-      >
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="rounded-[2rem] border border-white/10 bg-brand-950/80 p-10 shadow-xl shadow-black/10 sm:p-14">
-            <div className="grid gap-10 lg:grid-cols-[0.95fr_0.9fr] lg:items-center">
-              <div className="space-y-6">
-                <p className="text-sm uppercase tracking-[0.28em] text-brand-300">{pageContent.challenges.title}</p>
-                <h2 className="text-3xl font-semibold text-white sm:text-4xl">{pageContent.challenges.subtitle}</h2>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {pageContent.challenges.points.map((point) => (
-                  <div key={point} className="rounded-3xl border border-slate-800/90 bg-slate-950/90 p-6">
-                    <p className="text-slate-300">{point}</p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
@@ -289,6 +291,38 @@ export default function Home() {
         </div>
       </motion.section>
 
+      {/* SOCIAL PROOF */}
+      <motion.section
+        id="social-proof"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={fadeUp}
+        className="border-t border-white/10 py-16 lg:py-20"
+      >
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mb-12 space-y-4 text-center">
+            <p className="text-sm uppercase tracking-[0.28em] text-brand-300">What people say</p>
+            <h2 className="text-3xl font-semibold text-white sm:text-4xl">Trusted by leaders across industries.</h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {pageContent.testimonials.map((t) => (
+              <figure key={t.name} className="flex flex-col justify-between rounded-3xl border border-white/10 bg-brand-900/70 p-8 shadow-xl shadow-black/10">
+                <blockquote className="text-slate-300 leading-7">
+                  <span className="mb-4 block text-3xl leading-none text-brand-400">"</span>
+                  {t.quote}
+                </blockquote>
+                <figcaption className="mt-6 border-t border-white/10 pt-5">
+                  <p className="font-semibold text-white">{t.name}</p>
+                  <p className="mt-1 text-sm text-brand-300">{t.title} · {t.company}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* PROCESS */}
       <motion.section
         id="process"
         initial="hidden"
@@ -320,6 +354,32 @@ export default function Home() {
         </div>
       </motion.section>
 
+      {/* FAQ */}
+      <motion.section
+        id="faq"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={fadeUp}
+        className="border-t border-white/10 bg-brand-900/70 py-16 lg:py-20"
+      >
+        <div className="mx-auto max-w-4xl px-6 lg:px-8">
+          <div className="mb-12 space-y-4 text-center">
+            <p className="text-sm uppercase tracking-[0.28em] text-brand-300">Got questions?</p>
+            <h2 className="text-3xl font-semibold text-white sm:text-4xl">Frequently asked questions.</h2>
+          </div>
+          <div className="space-y-4">
+            {pageContent.faq.map((item) => (
+              <div key={item.question} className="rounded-3xl border border-white/10 bg-brand-950/80 p-8">
+                <h3 className="text-lg font-semibold text-white">{item.question}</h3>
+                <p className="mt-3 leading-7 text-slate-300">{item.answer}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* CONTACT */}
       <motion.section
         id="contact"
         initial="hidden"
