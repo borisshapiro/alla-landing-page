@@ -1,7 +1,25 @@
  'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
+
+function Avatar({ src, name }: { src: string; name: string }) {
+  const [error, setError] = useState(false);
+  const initials = name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
+  if (error) {
+    return (
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-800 ring-2 ring-brand-500/40">
+        <span className="text-sm font-semibold text-brand-300">{initials}</span>
+      </div>
+    );
+  }
+  return (
+    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-brand-500/40">
+      <Image src={src} alt={name} fill className="object-cover" sizes="48px" onError={() => setError(true)} />
+    </div>
+  );
+}
 import { content, languages } from '../lib/content';
 
 const CALENDLY_URL = 'https://calendly.com/alla-rndqueen/intro';
@@ -312,9 +330,12 @@ export default function Home() {
                   <span className="mb-4 block text-3xl leading-none text-brand-400">"</span>
                   {t.quote}
                 </blockquote>
-                <figcaption className="mt-6 border-t border-white/10 pt-5">
-                  <p className="font-semibold text-white">{t.name}</p>
-                  <p className="mt-1 text-sm text-brand-300">{t.title} · {t.company}</p>
+                <figcaption className="mt-6 flex items-center gap-4 border-t border-white/10 pt-5">
+                  <Avatar src={t.photo} name={t.name} />
+                  <div>
+                    <p className="font-semibold text-white">{t.name}</p>
+                    <p className="mt-0.5 text-sm text-brand-300">{t.title} · {t.company}</p>
+                  </div>
                 </figcaption>
               </figure>
             ))}

@@ -98,6 +98,7 @@ export const content = {
         name: 'Ella Vidra',
         title: 'CIO',
         company: 'eToro',
+        photo: '/testimonials/ella-vidra.jpg',
       },
       {
         quote:
@@ -105,6 +106,7 @@ export const content = {
         name: 'Gabi Levy',
         title: 'Head of Project Management',
         company: 'Amdocs IT',
+        photo: '/testimonials/gabi-levy.jpg',
       },
       {
         quote:
@@ -112,6 +114,7 @@ export const content = {
         name: 'Viktoria Okolotovich',
         title: 'VP R&D',
         company: 'Playtika',
+        photo: '/testimonials/viktoria-okolotovich.jpg',
       },
     ],
     faq: [
