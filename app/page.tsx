@@ -9,25 +9,16 @@ const CALENDLY_INTRO_URL = 'https://calendly.com/allsha/30-minutes-with-alla';
 const CALENDLY_CONSULT_URL = 'https://calendly.com/allsha/30min';
 
 // ── Client logo data (language-agnostic) ─────────────────────────────────────
-// All logos served from /public/logos/ — rendered white on dark bg via CSS filter
+// Only the 8 companies agreed upon for this page.
 const LOGOS = [
-  { name: 'eToro',               file: '/logos/etoro.svg' },
-  { name: 'Amdocs',              file: '/logos/amdocs.png' },
-  { name: 'NICE',                file: '/logos/nice.png' },
-  { name: '4CAST',               file: '/logos/4cast.png' },
-  { name: 'LifeWard',            file: '/logos/lifeward.png' },
-  { name: 'TripEx',              file: '/logos/tripex.png' },
-  { name: 'Razore Engineering',  file: '/logos/razore.png' },
-  { name: 'Infinity',            file: '/logos/infinity.png' },
-  { name: 'AirDoctor',           file: '/logos/airdoctor.png' },
-  { name: 'Matrix Digital',      file: '/logos/matrix-digital.png' },
-  { name: 'Matrix Medika',       file: '/logos/matrix-medika.png' },
-  { name: 'Arilou',              file: '/logos/arilou.png' },
-  { name: 'Edusoft',             file: '/logos/edusoft.png' },
-  { name: 'Salant ID',           file: '/logos/salant-id.png' },
-  { name: 'Travel Blue',         file: '/logos/travel-blue.png' },
-  { name: 'Western Negev',       file: '/logos/western-negev.png' },
-  { name: 'Logistics NGO',       file: '/logos/logistics-ngo.png' },
+  { name: 'eToro',              file: '/logos/etoro.svg' },
+  { name: 'Amdocs',             file: '/logos/amdocs.png' },
+  { name: 'NICE',               file: '/logos/nice.png' },
+  { name: '4CAST',              file: '/logos/4cast.png' },
+  { name: 'LifeWard',           file: '/logos/lifeward.png' },
+  { name: 'TripEx',             file: '/logos/tripex.png' },
+  { name: 'Razore Engineering', file: '/logos/razore.png' },
+  { name: 'Infinity',           file: '/logos/infinity.png' },
 ] as const;
 
 // Section IDs are language-agnostic; nav items map to these by position

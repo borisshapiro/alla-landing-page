@@ -25,7 +25,7 @@ const config: Config = {
         'glow-sm': '0 8px 32px rgba(113, 83, 196, 0.22)',
       },
       animation: {
-        marquee: 'marquee 42s linear infinite',
+        marquee: 'marquee 28s linear infinite',
       },
       keyframes: {
         marquee: {
