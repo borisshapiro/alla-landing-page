@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!-- Background -->
+  <rect width="180" height="180" rx="40" fill="#0b1120"/>
+  <!-- Crown body -->
+  <path d="M28 140 L28 95 L62 118 L90 62 L118 118 L152 95 L152 140 Z" fill="#7f5cc6"/>
+  <!-- Crown base band -->
+  <rect x="24" y="140" width="132" height="20" rx="10" fill="#7f5cc6"/>
+  <!-- Gems -->
+  <circle cx="28" cy="93" r="11" fill="#9b86e9"/>
+  <circle cx="90" cy="62" r="11" fill="#9b86e9"/>
+  <circle cx="152" cy="93" r="11" fill="#9b86e9"/>
+</svg>
