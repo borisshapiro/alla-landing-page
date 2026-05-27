@@ -1,7 +1,7 @@
  'use client';
 
 import { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { content, languages } from '../lib/content';
 
 const CALENDLY_URL = 'https://calendly.com/alla-rndqueen/intro';
@@ -24,7 +24,7 @@ export default function Home() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
-  const fadeUp = reduceMotion
+  const fadeUp: Variants = reduceMotion
     ? {
         hidden: { opacity: 1, y: 0 },
         visible: { opacity: 1, y: 0 },
