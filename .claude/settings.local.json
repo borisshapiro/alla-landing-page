@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cmd /c \"del /f C:\\\\Users\\\\BorisShapiro\\\\Documents\\\\alla-website\\\\.git\\\\index.lock\")"
+    ]
+  }
+}
