@@ -96,10 +96,12 @@ function Avatar({
   src,
   name,
   size = 'md',
+  priority = false,
 }: {
   src: string;
   name: string;
   size?: 'md' | 'lg' | 'xl';
+  priority?: boolean;
 }) {
   const [error, setError] = useState(false);
   const initials = name
@@ -129,6 +131,7 @@ function Avatar({
         src={src}
         alt={name}
         fill
+        priority={priority}
         className="object-cover object-top"
         sizes={size === 'xl' ? '128px' : size === 'lg' ? '96px' : '48px'}
         onError={() => setError(true)}
@@ -422,10 +425,10 @@ export default function Home() {
                   aria-pressed={language === lang.code}
                   aria-label={
                     lang.code === 'en'
-                      ? 'Switch to English'
+                      ? 'EN — Switch to English'
                       : lang.code === 'he'
-                        ? 'עברית'
-                        : 'Русский'
+                        ? 'HE — Switch to Hebrew'
+                        : 'RU — Switch to Russian'
                   }
                   className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                     language === lang.code
@@ -632,7 +635,7 @@ export default function Home() {
               <div className="space-y-6">
                 {/* Photo + name — horizontal, left-aligned */}
                 <div className="flex items-center gap-6">
-                  <Avatar src="/alla-shapiro.png" name="Alla Shapiro" size="xl" />
+                  <Avatar src="/alla-shapiro.png" name="Alla Shapiro" size="xl" priority />
                   <div className="min-w-0">
                     <p className="text-xs uppercase tracking-[0.22em] text-brand-300">
                       {isRTL ? 'VP R&D שבריר · RNDQueen' : 'Fractional VP R&D · RNDQueen'}
@@ -685,7 +688,7 @@ export default function Home() {
 
       {/* ── LOGO BAR — animated image marquee ────────────────────────────── */}
       <div className="border-t border-white/8 bg-brand-900 py-8">
-        <p className="mb-7 px-6 text-center text-xs uppercase tracking-[0.28em] text-slate-500">
+        <p className="mb-7 px-6 text-center text-xs uppercase tracking-[0.28em] text-slate-400">
           {pageContent.logoBar.label}
         </p>
         {reduceMotion ? (
@@ -693,11 +696,12 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
               {LOGOS.map((logo) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   key={logo.name}
                   src={logo.file}
                   alt={logo.name}
+                  width={220}
+                  height={56}
                   className="h-7 w-auto max-w-[110px] object-contain brightness-0 invert opacity-40"
                 />
               ))}
@@ -712,11 +716,12 @@ export default function Home() {
             {/* Track: 4× copies so translateX(-25%) = exactly 1 set, robust on any screen */}
             <div className="flex w-max animate-marquee items-center gap-28 py-3">
               {[...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS].map((logo, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   key={i}
                   src={logo.file}
                   alt={logo.name}
+                  width={220}
+                  height={56}
                   className="h-14 w-auto max-w-[220px] shrink-0 object-contain brightness-0 invert opacity-55 transition-opacity duration-300 hover:opacity-90"
                 />
               ))}
@@ -1129,14 +1134,14 @@ export default function Home() {
             </nav>
           </div>
           {/* Legal links */}
-          <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-white/8 pt-6 text-xs text-slate-600">
-            <a href="/accessibility" className="transition hover:text-slate-400">
+          <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-white/8 pt-6 text-xs text-slate-400">
+            <a href="/accessibility" className="transition hover:text-white">
               {pageContent.legal.accessibility}
             </a>
-            <a href="/privacy" className="transition hover:text-slate-400">
+            <a href="/privacy" className="transition hover:text-white">
               {pageContent.legal.privacy}
             </a>
-            <a href="/terms" className="transition hover:text-slate-400">
+            <a href="/terms" className="transition hover:text-white">
               {pageContent.legal.terms}
             </a>
           </div>
