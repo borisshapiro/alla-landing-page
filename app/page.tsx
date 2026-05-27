@@ -20,6 +20,47 @@ const LOGOS = [
   { name: 'Infinity',           file: '/logos/infinity.png' },
 ] as const;
 
+// ── FAQ structured data (English — for Google's FAQ rich result) ────────────
+// Must stay in sync with content.ts en.faq entries.
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How quickly can we get started?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Most engagements kick off within 1–2 weeks of the intro call. The first step is a short discovery conversation to define scope — after that, we move fast.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is there a minimum commitment or contract length?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No long-term lock-in. Engagements are structured as monthly retainers with a 30-day notice period, so you stay in full control of the relationship.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can this work for a remote or distributed team?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes — most work is conducted remotely and designed to fit distributed teams. For Israel-based organizations, on-site presence is available when it adds value.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is a fractional engagement priced?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Pricing is based on the scope and weekly hours involved, structured as a monthly retainer. You get senior R&D leadership at a fraction of a full-time executive cost — with full flexibility to scale up or down.',
+      },
+    },
+  ],
+};
+
 // Section IDs are language-agnostic; nav items map to these by position
 const SECTION_IDS = [
   'challenges',
@@ -1139,6 +1180,12 @@ export default function Home() {
           </motion.button>
         )}
       </AnimatePresence>
+
+      {/* ── FAQ STRUCTURED DATA ────────────────────────────────────────────── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
+      />
 
       {/* ── CALENDLY MODAL ─────────────────────────────────────────────────── */}
       <AnimatePresence>
