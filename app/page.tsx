@@ -660,8 +660,8 @@ export default function Home() {
             {/* Fade masks */}
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-brand-900 to-transparent" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-brand-900 to-transparent" />
-            {/* Track — doubled so translateX(-50%) loops seamlessly */}
-            <div className="flex animate-marquee items-center gap-16 whitespace-nowrap py-1">
+            {/* Track — w-max makes width = content width, so translateX(-50%) = exactly one set */}
+            <div className="flex w-max animate-marquee items-center gap-16 py-1">
               {[...LOGOS, ...LOGOS].map((logo, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
