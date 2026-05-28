@@ -273,6 +273,17 @@ export default function Home() {
   const pageContent = content[language];
   const isRTL = language === 'he';
 
+  // On mount: disable browser scroll restoration and force position to top.
+  // history.scrollRestoration = 'manual' prevents Chrome/Firefox/Safari from
+  // restoring a previous scroll offset on revisit or back-navigation, which
+  // otherwise fires after React effects and overrides any scrollTo call.
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.history.scrollRestoration = 'manual';
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, []);
+
   // Reset UI when language changes — scroll to top so user sees the hero in the new language
   useEffect(() => {
     setOpenFaqIndex(null);
