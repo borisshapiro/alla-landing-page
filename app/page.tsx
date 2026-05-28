@@ -241,11 +241,11 @@ function AnimatedNumber({
   if (splitUnit) {
     return (
       <>
-        <span ref={ref} className="text-3xl font-extrabold leading-none tracking-tight text-white">
+        <span ref={ref} className="text-xl font-extrabold leading-none tracking-tight text-white sm:text-3xl">
           {prefix}{count}
         </span>
         {unit && (
-          <span className="mt-1 text-xs font-semibold uppercase tracking-widest text-brand-300">
+          <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-brand-300 sm:mt-1 sm:text-xs">
             {unit}
           </span>
         )}
@@ -269,13 +269,15 @@ export default function Home() {
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const closeCalendlyRef = useRef<HTMLButtonElement>(null);
+  const marqueeRef = useRef<HTMLDivElement>(null);
   const pageContent = content[language];
   const isRTL = language === 'he';
 
-  // Reset UI when language changes
+  // Reset UI when language changes — scroll to top so user sees the hero in the new language
   useEffect(() => {
     setOpenFaqIndex(null);
     setMobileNavOpen(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [language]);
 
   // Escape key closes overlays
@@ -317,19 +319,23 @@ export default function Home() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Hide sticky mobile CTA when main CTA buttons are visible on screen
+  // Hide sticky mobile CTA when main CTA buttons are visible on screen.
+  // Uses a cumulative Map so we always know the state of BOTH targets,
+  // not just the single changed entry that IntersectionObserver delivers.
   useEffect(() => {
+    const visibilityMap = new Map<Element, boolean>();
     const observer = new IntersectionObserver(
       (entries) => {
-        const anyVisible = entries.some((e) => e.isIntersecting);
+        entries.forEach((e) => visibilityMap.set(e.target, e.isIntersecting));
+        const anyVisible = [...visibilityMap.values()].some(Boolean);
         setShowStickyCTA(!anyVisible);
       },
       { threshold: 0.1 },
     );
     const heroCTA = document.getElementById('hero-cta');
     const contactCTA = document.getElementById('contact-cta');
-    if (heroCTA) observer.observe(heroCTA);
-    if (contactCTA) observer.observe(contactCTA);
+    if (heroCTA) { visibilityMap.set(heroCTA, false); observer.observe(heroCTA); }
+    if (contactCTA) { visibilityMap.set(contactCTA, false); observer.observe(contactCTA); }
     return () => observer.disconnect();
   }, []);
 
@@ -680,18 +686,18 @@ export default function Home() {
                 </p>
 
                 {/* Outcome-focused stats — number first (big), unit accent, label last (small) */}
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
                   {pageContent.hero.stats.map((stat) => (
                     <div
                       key={stat.label}
-                      className="flex flex-col items-center rounded-2xl border border-white/8 bg-brand-900/60 px-2 py-5 text-center"
+                      className="flex flex-col items-center rounded-2xl border border-white/8 bg-brand-900/60 px-1.5 py-3 text-center sm:px-2 sm:py-5"
                     >
                       <AnimatedNumber
                         value={stat.value}
                         reduceMotion={reduceMotion}
                         splitUnit
                       />
-                      <p className="mt-3 text-[10px] font-medium leading-snug text-slate-500 sm:text-xs">
+                      <p className="mt-2 text-[9px] font-medium leading-snug text-slate-500 sm:mt-3 sm:text-[10px]">
                         {stat.label}
                       </p>
                     </div>
@@ -731,7 +737,18 @@ export default function Home() {
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-brand-900 to-transparent" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-brand-900 to-transparent" />
             {/* Track: 4× copies so translateX(-25%) = exactly 1 set, robust on any screen */}
-            <div className="flex w-max animate-marquee items-center gap-28 py-3">
+            {/* onTouchEnd: iOS/Android pause CSS animations on touch — restarting fixes the freeze */}
+            <div
+              ref={marqueeRef}
+              className="flex w-max animate-marquee items-center gap-28 py-3"
+              onTouchEnd={() => {
+                const el = marqueeRef.current;
+                if (!el) return;
+                el.style.animation = 'none';
+                void el.offsetHeight; // force reflow so the browser registers the reset
+                el.style.animation = '';
+              }}
+            >
               {[...LOGOS, ...LOGOS, ...LOGOS, ...LOGOS].map((logo, i) => (
                 <Image
                   key={i}
@@ -1166,34 +1183,37 @@ export default function Home() {
       </footer>
 
       {/* ── MOBILE STICKY CTA ──────────────────────────────────────────────── */}
-      {/* Hides automatically when hero or contact CTAs are visible on screen */}
-      <AnimatePresence>
-        {showStickyCTA && (
-          <motion.div
-            key="sticky-cta"
-            initial={{ y: 80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 80, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="fixed bottom-4 left-4 right-4 z-40 md:hidden"
-          >
-            <div className="mx-auto flex max-w-sm gap-3 rounded-full bg-brand-900/95 px-3 py-2.5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
-              <button
-                onClick={() => openCalendly(CALENDLY_INTRO_URL)}
-                className="flex-1 rounded-full bg-brand-500 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-brand-400"
-              >
-                {isRTL ? 'שיחת היכרות' : language === 'ru' ? 'Вводный звонок' : 'Free intro call'}
-              </button>
-              <button
-                onClick={() => openCalendly(CALENDLY_CONSULT_URL)}
-                className="flex-1 rounded-full border border-slate-700 px-4 py-3 text-center text-sm font-semibold text-slate-100 transition hover:border-brand-500/50"
-              >
-                {isRTL ? 'אסטרטגיה' : language === 'ru' ? 'Стратегия' : 'Strategy'}
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Outer div is always mounted with stable fixed positioning — no transforms.
+          AnimatePresence + motion.div live INSIDE so the y-animation never
+          interferes with the viewport anchor (iOS Safari fixed+transform bug). */}
+      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
+        <AnimatePresence>
+          {showStickyCTA && (
+            <motion.div
+              key="sticky-cta-inner"
+              initial={{ y: 80, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 80, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+            >
+              <div className="mx-auto flex max-w-sm gap-3 rounded-full bg-brand-900/95 px-3 py-2.5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
+                <button
+                  onClick={() => openCalendly(CALENDLY_INTRO_URL)}
+                  className="flex-1 rounded-full bg-brand-500 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-brand-400"
+                >
+                  {isRTL ? 'שיחת היכרות' : language === 'ru' ? 'Вводный звонок' : 'Free intro call'}
+                </button>
+                <button
+                  onClick={() => openCalendly(CALENDLY_CONSULT_URL)}
+                  className="flex-1 rounded-full border border-slate-700 px-4 py-3 text-center text-sm font-semibold text-slate-100 transition hover:border-brand-500/50"
+                >
+                  {isRTL ? 'אסטרטגיה' : language === 'ru' ? 'Стратегия' : 'Strategy'}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* ── BACK TO TOP ────────────────────────────────────────────────────── */}
       <AnimatePresence>
