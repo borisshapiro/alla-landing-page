@@ -183,7 +183,8 @@ export const content = {
       ctaConsult: 'קבע פגישת אסטרטגיה',
       stats: [
         { label: 'ניסיון R&D', value: '+20 שנים' },
-        { label: 'זמן להתחלה', value: '< שבועיים' },
+        // HE fix: שבועיים has no digit so AnimatedNumber can't parse it → use < 2 שבועות
+        { label: 'זמן להתחלה', value: '< 2 שבועות' },
         { label: 'כיסוי גלובלי', value: '3 יבשות' },
       ],
     },

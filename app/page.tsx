@@ -731,8 +731,10 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* Animated marquee: logos doubled for seamless CSS loop */
-          <div className="relative overflow-hidden">
+          /* Animated marquee: logos doubled for seamless CSS loop.
+             dir="ltr" is intentional — the strip is language-agnostic and the
+             translateX(-25%) animation must run LTR regardless of page direction. */
+          <div className="relative overflow-hidden" dir="ltr">
             {/* Fade masks */}
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-brand-900 to-transparent" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-brand-900 to-transparent" />
