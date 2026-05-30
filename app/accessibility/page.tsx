@@ -4,6 +4,8 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Accessibility Statement | הצהרת נגישות | Заявление о доступности — RNDQueen',
   description: 'Accessibility statement for rndqueen.com, compliant with Israeli Web Accessibility Regulations and WCAG 2.1 AA.',
+  alternates: { canonical: 'https://rndqueen.com/accessibility' },
+  robots: { index: true, follow: true },
 };
 
 export default function AccessibilityPage() {

@@ -4,6 +4,8 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Terms of Use | תנאי שימוש | Условия использования — RNDQueen',
   description: 'Terms of use for rndqueen.com.',
+  alternates: { canonical: 'https://rndqueen.com/terms' },
+  robots: { index: true, follow: true },
 };
 
 export default function TermsPage() {

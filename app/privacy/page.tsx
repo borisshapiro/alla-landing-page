@@ -4,6 +4,8 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Privacy Policy | מדיניות פרטיות | Политика конфиденциальности — RNDQueen',
   description: 'Privacy policy for rndqueen.com — GDPR and Israeli Privacy Protection Law compliance.',
+  alternates: { canonical: 'https://rndqueen.com/privacy' },
+  robots: { index: true, follow: true },
 };
 
 export default function PrivacyPage() {
@@ -82,7 +84,7 @@ export default function PrivacyPage() {
               <h2 className="mb-4 text-xl font-bold text-white">3. Cookies</h2>
               <p>
                 This website does not set any first-party cookies. Calendly, when embedded, may set session cookies in accordance with{' '}
-                <a href="https://calendly.com/privacy" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">
+                <a href="https://calendly.com/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">
                   Calendly&apos;s Privacy Policy
                 </a>.
               </p>
@@ -102,10 +104,10 @@ export default function PrivacyPage() {
               </p>
               <ul className="space-y-2">
                 <li>• <strong className="text-white">Calendly Inc.</strong> — for scheduling. See their{' '}
-                  <a href="https://calendly.com/privacy" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">Privacy Policy</a>.
+                  <a href="https://calendly.com/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">Privacy Policy</a>.
                 </li>
                 <li>• <strong className="text-white">Vercel Inc.</strong> — our hosting provider. See their{' '}
-                  <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">Privacy Policy</a>.
+                  <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">Privacy Policy</a>.
                 </li>
                 <li>• When required by applicable law or court order.</li>
               </ul>
@@ -141,7 +143,7 @@ export default function PrivacyPage() {
               <ul className="mt-3 space-y-2">
                 <li>
                   • <strong className="text-white">Israel:</strong> The Privacy Protection Authority (רשות הגנת הפרטיות){' '}
-                  <a href="https://www.gov.il/en/departments/the_privacy_protection_authority" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">
+                  <a href="https://www.gov.il/en/departments/the_privacy_protection_authority" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">
                     gov.il/en/departments/the_privacy_protection_authority
                   </a>
                 </li>
@@ -234,7 +236,7 @@ export default function PrivacyPage() {
               <h3 className="mb-4 text-xl font-bold text-white">3. עוגיות</h3>
               <p>
                 אתר זה אינו מגדיר עוגיות צד ראשון. Calendly, בעת הטמעה, עשוי להגדיר עוגיות סשן בהתאם ל
-                <a href="https://calendly.com/privacy" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">
+                <a href="https://calendly.com/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">
                   מדיניות הפרטיות שלו
                 </a>.
               </p>
@@ -252,10 +254,10 @@ export default function PrivacyPage() {
               <p className="mb-3">אנו אינם מוכרים, משכירים או משתפים את הנתונים האישיים שלך עם צדדים שלישיים, למעט:</p>
               <ul className="space-y-2">
                 <li>• <strong className="text-white">Calendly Inc.</strong> — לצורך תיאום פגישות. ראה/י את{' '}
-                  <a href="https://calendly.com/privacy" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">מדיניות הפרטיות שלהם</a>.
+                  <a href="https://calendly.com/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">מדיניות הפרטיות שלהם</a>.
                 </li>
                 <li>• <strong className="text-white">Vercel Inc.</strong> — ספק האחסון שלנו. ראה/י את{' '}
-                  <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">מדיניות הפרטיות שלהם</a>.
+                  <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">מדיניות הפרטיות שלהם</a>.
                 </li>
                 <li>• כאשר נדרש על פי חוק או צו בית משפט.</li>
               </ul>
@@ -289,7 +291,7 @@ export default function PrivacyPage() {
               <ul className="mt-3 space-y-2">
                 <li>
                   • <strong className="text-white">ישראל:</strong> רשות הגנת הפרטיות{' '}
-                  <a href="https://www.gov.il/he/departments/the_privacy_protection_authority" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">
+                  <a href="https://www.gov.il/he/departments/the_privacy_protection_authority" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">
                     gov.il
                   </a>
                 </li>
@@ -380,7 +382,7 @@ export default function PrivacyPage() {
               <h3 className="mb-4 text-xl font-bold text-white">3. Файлы cookie</h3>
               <p>
                 Этот сайт не устанавливает собственные файлы cookie. Calendly при встраивании может устанавливать сессионные cookie в соответствии со своей{' '}
-                <a href="https://calendly.com/privacy" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">
+                <a href="https://calendly.com/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">
                   политикой конфиденциальности
                 </a>.
               </p>
@@ -400,10 +402,10 @@ export default function PrivacyPage() {
               </p>
               <ul className="space-y-2">
                 <li>• <strong className="text-white">Calendly Inc.</strong> — для планирования встреч. См. их{' '}
-                  <a href="https://calendly.com/privacy" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">Политику конфиденциальности</a>.
+                  <a href="https://calendly.com/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">Политику конфиденциальности</a>.
                 </li>
                 <li>• <strong className="text-white">Vercel Inc.</strong> — наш хостинг-провайдер. См. их{' '}
-                  <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">Политику конфиденциальности</a>.
+                  <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">Политику конфиденциальности</a>.
                 </li>
                 <li>• Когда это требуется по закону или судебному решению.</li>
               </ul>
@@ -439,7 +441,7 @@ export default function PrivacyPage() {
               <ul className="mt-3 space-y-2">
                 <li>
                   • <strong className="text-white">Израиль:</strong> Управление по защите персональных данных (רשות הגנת הפרטיות){' '}
-                  <a href="https://www.gov.il/en/departments/the_privacy_protection_authority" target="_blank" rel="noreferrer" className="text-brand-400 underline hover:text-brand-300">
+                  <a href="https://www.gov.il/en/departments/the_privacy_protection_authority" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline hover:text-brand-300">
                     gov.il
                   </a>
                 </li>
