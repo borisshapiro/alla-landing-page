@@ -100,3 +100,85 @@ section[id] {
   outline-offset: 3px               !important;
   border-radius:  2px;
 }
+
+/* ─── Scroll progress bar ───────────────────────────────────────────────────── */
+.scroll-progress-bar {
+  transform-origin: left;
+  transform: scaleX(var(--scroll-progress, 0));
+  will-change: transform;
+}
+
+/* ─── Entrance animations ───────────────────────────────────────────────────── */
+@keyframes anim-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes anim-slide-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes anim-float-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(22px, -44px) scale(1.07); }
+}
+@keyframes anim-float-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-28px, 36px) scale(1.1); }
+}
+@keyframes anim-float-c {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(16px, -24px); }
+}
+
+.animate-fade-up       { animation: anim-fade-up   0.55s ease-out         both; }
+.animate-fade-up-delay { animation: anim-fade-up   0.55s ease-out 0.22s   both; }
+.animate-slide-down    { animation: anim-slide-down 0.65s ease-out         both; }
+.animate-float-a       { animation: anim-float-a   13s   ease-in-out       infinite; }
+.animate-float-b       { animation: anim-float-b   17s   ease-in-out 3.5s  infinite; }
+.animate-float-c       { animation: anim-float-c    9s   ease-in-out 1.5s  infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-up-delay,
+  .animate-slide-down    { animation: none; opacity: 1; transform: none; }
+  .animate-float-a,
+  .animate-float-b,
+  .animate-float-c       { animation: none; }
+}
+
+/* ─── Scroll-triggered section reveal ──────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ─── Mobile nav drawer — direction-aware slide (no inline style needed) ────── */
+/* The drawer lives inside <main dir="ltr|rtl">, so [dir] selects the right side */
+[dir="ltr"] .nav-drawer { transform: translateX(100%); }
+[dir="rtl"] .nav-drawer { transform: translateX(-100%); }
+.nav-drawer.nav-open  { transform: translateX(0); }
+
+/* ─── FAQ accordion (grid-template-rows trick for smooth height animation) ─── */
+.faq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.25s ease-in-out, opacity 0.25s ease-in-out;
+}
+.faq-body.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.faq-body > * { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-body, .faq-body.open { transition: none; }
+}

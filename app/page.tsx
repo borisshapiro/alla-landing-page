@@ -2,14 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { AnimatePresence, motion, useReducedMotion, useScroll, type Variants } from 'framer-motion';
 import { content, languages, type LanguageCode } from '../lib/content';
 
 const CALENDLY_INTRO_URL = 'https://calendly.com/allsha/30-minutes-with-alla';
 const CALENDLY_CONSULT_URL = 'https://calendly.com/allsha/30min';
 
 // ── Client logo data (language-agnostic) ─────────────────────────────────────
-// Only the 8 companies agreed upon for this page.
 const LOGOS = [
   { name: 'Amdocs',             file: '/logos/amdocs.png' },
   { name: 'NICE',               file: '/logos/nice.png' },
@@ -21,7 +19,6 @@ const LOGOS = [
 ] as const;
 
 // ── FAQ structured data (English — for Google's FAQ rich result) ────────────
-// Must stay in sync with content.ts en.faq entries.
 const FAQ_SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -61,7 +58,6 @@ const FAQ_SCHEMA = {
   ],
 };
 
-// Section IDs are language-agnostic; nav items map to these by position
 const SECTION_IDS = [
   'challenges',
   'offerings',
@@ -71,6 +67,41 @@ const SECTION_IDS = [
   'faq',
   'contact',
 ] as const;
+
+// ── Hooks ────────────────────────────────────────────────────────────────────
+
+function useReducedMotionPref(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduced(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  return reduced;
+}
+
+// Adds `in-view` class when element scrolls into view (once). CSS does the rest.
+function useReveal() {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('in-view');
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return ref;
+}
 
 // ── Crown logo ──────────────────────────────────────────────────────────────
 function CrownLogo({ className }: { className?: string }) {
@@ -142,13 +173,9 @@ function Avatar({
 
 // ── Offering icons ──────────────────────────────────────────────────────────
 const OFFERING_ICON_PATHS = [
-  // VP R&D — org hierarchy
   'M12 4a2 2 0 100 4 2 2 0 000-4zm0 4v3m-5 1a2 2 0 100 4 2 2 0 000-4zm0 2H7m5-2l-5 2m0 0v0m10-2a2 2 0 100 4 2 2 0 000-4zm0 2h2M12 11l5 2',
-  // Game Studio — gamepad
   'M6 12h2m0 0v2m0-2V10m4 4h.01m3-.01h.01M4 8h16a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z',
-  // Team Scaling — people
   'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
-  // R&D Leadership — star
   'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z',
 ];
 
@@ -188,16 +215,13 @@ function Chevron({ open }: { open: boolean }) {
 }
 
 // ── Animated counter ─────────────────────────────────────────────────────────
-// Parses strings like "20+ yrs", "< 2 weeks", "3 continents"
-// and counts the numeric portion up from 0 when first visible.
-// splitUnit=true: renders the suffix on a separate smaller line (for stat cards).
 function AnimatedNumber({
   value,
   reduceMotion,
   splitUnit = false,
 }: {
   value: string;
-  reduceMotion: boolean | null;
+  reduceMotion: boolean;
   splitUnit?: boolean;
 }) {
   const match = value.match(/^([^0-9]*)(\d+)(.*)$/);
@@ -219,7 +243,6 @@ function AnimatedNumber({
         const step = (ts: number) => {
           if (!startTime) startTime = ts;
           const progress = Math.min((ts - startTime) / duration, 1);
-          // ease-out cubic
           const eased = 1 - Math.pow(1 - progress, 3);
           setCount(Math.round(eased * target));
           if (progress < 1) requestAnimationFrame(step);
@@ -237,7 +260,6 @@ function AnimatedNumber({
   const [, prefix, , suffix] = match;
   const unit = suffix.trim();
 
-  // Split display: large number line + smaller unit line
   if (splitUnit) {
     return (
       <>
@@ -266,17 +288,22 @@ export default function Home() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [showStickyCTA, setShowStickyCTA] = useState(true);
-  const reduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
+  const reduceMotion = useReducedMotionPref();
   const closeCalendlyRef = useRef<HTMLButtonElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const pageContent = content[language];
   const isRTL = language === 'he';
 
+  // Reveal refs for below-fold sections
+  const challengesRef = useReveal();
+  const offeringsRef = useReveal();
+  const whyMeRef = useReveal();
+  const testimonialsRef = useReveal();
+  const processRef = useReveal();
+  const faqRef = useReveal();
+  const contactRef = useReveal();
+
   // On mount: disable browser scroll restoration and force position to top.
-  // history.scrollRestoration = 'manual' prevents Chrome/Firefox/Safari from
-  // restoring a previous scroll offset on revisit or back-navigation, which
-  // otherwise fires after React effects and overrides any scrollTo call.
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.history.scrollRestoration = 'manual';
@@ -284,7 +311,20 @@ export default function Home() {
     }
   }, []);
 
-  // Reset UI when language changes — scroll to top so user sees the hero in the new language
+  // Scroll progress bar via CSS custom property (no Framer Motion needed)
+  useEffect(() => {
+    function update() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+      document.documentElement.style.setProperty('--scroll-progress', String(progress));
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+    return () => window.removeEventListener('scroll', update);
+  }, []);
+
+  // Reset UI when language changes
   useEffect(() => {
     setOpenFaqIndex(null);
     setMobileNavOpen(false);
@@ -331,8 +371,6 @@ export default function Home() {
   }, []);
 
   // Hide sticky mobile CTA when main CTA buttons are visible on screen.
-  // Uses a cumulative Map so we always know the state of BOTH targets,
-  // not just the single changed entry that IntersectionObserver delivers.
   useEffect(() => {
     const visibilityMap = new Map<Element, boolean>();
     const observer = new IntersectionObserver(
@@ -357,25 +395,9 @@ export default function Home() {
     }
   }, [calendlyOpen]);
 
-  // Animations
-  const fadeUp: Variants = reduceMotion
-    ? { hidden: { opacity: 1, y: 0 }, visible: { opacity: 1, y: 0 } }
-    : {
-        hidden: { opacity: 0, y: 24 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' } },
-      };
-
-  const headerVariants: Variants = reduceMotion
-    ? { hidden: { opacity: 1, y: 0 }, visible: { opacity: 1, y: 0 } }
-    : {
-        hidden: { opacity: 0, y: -20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.65 } },
-      };
-
   function openCalendly(url: string) {
     setCalendlyUrl(url);
     setCalendlyOpen(true);
-    // GA4 conversion event — fires every time a user opens the booking widget
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const gtag = typeof window !== 'undefined' && (window as any).gtag;
     if (typeof gtag === 'function') {
@@ -393,18 +415,14 @@ export default function Home() {
       dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* ── SCROLL PROGRESS ────────────────────────────────────────────────── */}
-      <motion.div
-        className="fixed left-0 top-0 right-0 z-50 h-[2px] origin-left bg-gradient-to-r from-brand-600 via-brand-400 to-brand-200"
-        style={{ scaleX: scrollYProgress }}
+      <div
+        className="fixed left-0 top-0 right-0 z-50 h-[2px] scroll-progress-bar bg-gradient-to-r from-brand-600 via-brand-400 to-brand-200"
         aria-hidden="true"
       />
 
       {/* ── HEADER ─────────────────────────────────────────────────────────── */}
-      <motion.header
-        initial="hidden"
-        animate="visible"
-        variants={headerVariants}
-        className="sticky top-0 z-30 border-b border-white/10 bg-brand-950/95 backdrop-blur-xl"
+      <header
+        className="animate-slide-down sticky top-0 z-30 border-b border-white/10 bg-brand-950/95 backdrop-blur-xl"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
           {/* Brand */}
@@ -415,7 +433,6 @@ export default function Home() {
           >
             <CrownLogo className="h-8 w-8 text-brand-400" />
             <div>
-              {/* Name hidden on smallest screens to keep room for lang switcher */}
               <p className="hidden text-sm font-bold uppercase tracking-[0.22em] text-white sm:block">
                 Alla Shapiro
               </p>
@@ -477,6 +494,7 @@ export default function Home() {
 
             {/* Hamburger */}
             <button
+              type="button"
               onClick={() => setMobileNavOpen((s) => !s)}
               aria-label="Toggle navigation menu"
               aria-expanded={mobileNavOpen}
@@ -490,129 +508,94 @@ export default function Home() {
                 strokeWidth={1.5}
                 aria-hidden="true"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {/* ── MOBILE NAV DRAWER ──────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {mobileNavOpen && (
-          <>
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60"
-              onClick={() => setMobileNavOpen(false)}
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/60 transition-opacity duration-200 ${
+          mobileNavOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setMobileNavOpen(false)}
+        aria-hidden="true"
+      />
+      {/* Drawer — CSS [dir] selector handles RTL/LTR slide direction (see globals.css .nav-drawer) */}
+      <div
+        className={`nav-drawer fixed top-0 ${isRTL ? 'left-0' : 'right-0'} z-50 h-full w-72 bg-brand-900 p-6 shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.33,1,0.68,1)] ${
+          mobileNavOpen ? 'nav-open pointer-events-auto' : 'pointer-events-none'
+        }`}
+        role="dialog"
+        aria-label="Navigation menu"
+      >
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CrownLogo className="h-6 w-6 text-brand-400" />
+            <span className="text-sm font-bold uppercase tracking-[0.2em] text-white">Menu</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen(false)}
+            aria-label="Close navigation menu"
+            className="flex h-9 w-9 items-center justify-center rounded-md text-slate-300 hover:bg-white/10"
+          >
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
               aria-hidden="true"
-            />
-            <motion.div
-              key="drawer"
-              initial={{ x: isRTL ? '-100%' : '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: isRTL ? '-100%' : '100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className={`fixed top-0 ${isRTL ? 'left-0' : 'right-0'} z-50 h-full w-72 bg-brand-900 p-6 shadow-2xl`}
-              role="dialog"
-              aria-label="Navigation menu"
             >
-              <div className="mb-6 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CrownLogo className="h-6 w-6 text-brand-400" />
-                  <span className="text-sm font-bold uppercase tracking-[0.2em] text-white">
-                    Menu
-                  </span>
-                </div>
-                <button
-                  onClick={() => setMobileNavOpen(false)}
-                  aria-label="Close navigation menu"
-                  className="flex h-9 w-9 items-center justify-center rounded-md text-slate-300 hover:bg-white/10"
-                >
-                  <svg
-                    className="h-5 w-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
-                {pageContent.header.nav.map((item, i) => (
-                  <a
-                    key={item}
-                    href={`#${SECTION_IDS[i]}`}
-                    onClick={() => setMobileNavOpen(false)}
-                    className={`rounded-xl px-4 py-3 text-base font-medium transition hover:bg-white/5 hover:text-white ${
-                      activeSection === SECTION_IDS[i]
-                        ? 'bg-brand-600/20 text-white'
-                        : 'text-slate-300'
-                    }`}
-                  >
-                    {item}
-                  </a>
-                ))}
-              </nav>
-              {/* Language switching is in the header bar — always visible outside this drawer */}
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
+          {pageContent.header.nav.map((item, i) => (
+            <a
+              key={item}
+              href={`#${SECTION_IDS[i]}`}
+              onClick={() => setMobileNavOpen(false)}
+              className={`rounded-xl px-4 py-3 text-base font-medium transition hover:bg-white/5 hover:text-white ${
+                activeSection === SECTION_IDS[i]
+                  ? 'bg-brand-600/20 text-white'
+                  : 'text-slate-300'
+              }`}
+            >
+              {item}
+            </a>
+          ))}
+        </nav>
+      </div>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
         {/* Top gradient */}
         <div className="absolute inset-x-0 top-0 -z-10 h-80 bg-gradient-to-b from-brand-500/30 via-brand-600/10 to-transparent blur-3xl" />
 
-        {/* Floating ambient orbs — no -z-10 (that buries them behind the bg); source order keeps them under content */}
-        {!reduceMotion && (
-          <>
-            {/* Large violet orb — right side of hero card */}
-            <motion.div
-              animate={{ y: [0, -44, 0], x: [0, 22, 0], scale: [1, 1.07, 1] }}
-              transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-              className="pointer-events-none absolute right-[12%] top-16 h-[30rem] w-[30rem] rounded-full bg-brand-500/30 blur-[72px]"
-              aria-hidden="true"
-            />
-            {/* Mid orb — lower-left */}
-            <motion.div
-              animate={{ y: [0, 36, 0], x: [0, -28, 0], scale: [1, 1.1, 1] }}
-              transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut', delay: 3.5 }}
-              className="pointer-events-none absolute bottom-0 left-[18%] h-[22rem] w-[22rem] rounded-full bg-brand-600/22 blur-[60px]"
-              aria-hidden="true"
-            />
-            {/* Small accent orb — far left edge */}
-            <motion.div
-              animate={{ y: [0, -24, 0], x: [0, 16, 0] }}
-              transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-              className="pointer-events-none absolute left-[4%] top-1/3 h-56 w-56 rounded-full bg-brand-400/18 blur-[44px]"
-              aria-hidden="true"
-            />
-          </>
-        )}
+        {/* Floating ambient orbs — CSS keyframe animations; paused by prefers-reduced-motion */}
+        <div
+          className="pointer-events-none absolute right-[12%] top-16 h-[30rem] w-[30rem] rounded-full bg-brand-500/30 blur-[72px] animate-float-a"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute bottom-0 left-[18%] h-[22rem] w-[22rem] rounded-full bg-brand-600/22 blur-[60px] animate-float-b"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute left-[4%] top-1/3 h-56 w-56 rounded-full bg-brand-400/18 blur-[44px] animate-float-c"
+          aria-hidden="true"
+        />
 
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-8">
           <div className="flex flex-col gap-14 lg:flex-row lg:items-center lg:justify-between">
             {/* Left — headline + CTAs */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              transition={reduceMotion ? {} : { delay: 0.1, duration: 0.55, ease: 'easeOut' }}
-              className="max-w-2xl space-y-8"
-            >
+            <div className="max-w-2xl space-y-8 animate-fade-up">
               <p className="inline-flex items-center gap-2 rounded-full border border-brand-500/40 bg-brand-900/70 px-4 py-1.5 text-xs uppercase tracking-[0.28em] text-brand-300">
                 <CrownLogo className="h-3.5 w-3.5" />
                 {pageContent.header.tagline}
@@ -636,12 +619,14 @@ export default function Home() {
               <div id="hero-cta" className="space-y-3">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <button
+                    type="button"
                     onClick={() => openCalendly(CALENDLY_INTRO_URL)}
                     className="inline-flex w-full items-center justify-center rounded-full bg-brand-500 px-7 py-3.5 text-sm font-semibold text-white shadow-glow shadow-brand-500/30 transition hover:bg-brand-400 sm:w-auto"
                   >
                     {pageContent.hero.ctaIntro}
                   </button>
                   <button
+                    type="button"
                     onClick={() => openCalendly(CALENDLY_CONSULT_URL)}
                     className="inline-flex w-full items-center justify-center rounded-full border border-slate-600 bg-slate-950/80 px-7 py-3.5 text-sm font-semibold text-slate-100 transition hover:border-brand-500/60 hover:bg-brand-900/30 sm:w-auto"
                   >
@@ -656,18 +641,12 @@ export default function Home() {
                       : 'Free 30-min call · No commitment · Available remotely'}
                 </p>
               </div>
-            </motion.div>
+            </div>
 
             {/* Right — profile card */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              transition={reduceMotion ? {} : { delay: 0.22, duration: 0.55, ease: 'easeOut' }}
-              className="rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-glow shadow-brand-500/20 backdrop-blur-xl sm:p-10 lg:w-[38rem]"
-            >
+            <div className="animate-fade-up-delay rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-glow shadow-brand-500/20 backdrop-blur-xl sm:p-10 lg:w-[38rem]">
               <div className="space-y-6">
-                {/* Photo + name — horizontal, left-aligned */}
+                {/* Photo + name */}
                 <div className="flex items-center gap-6">
                   <Avatar src="/alla-shapiro.png" name="Alla Shapiro" size="xl" priority />
                   <div className="min-w-0">
@@ -696,18 +675,14 @@ export default function Home() {
                       : 'Senior R&D management professional with decades of experience leading global engineering teams, game studios and software organizations across international markets.'}
                 </p>
 
-                {/* Outcome-focused stats — number first (big), unit accent, label last (small) */}
+                {/* Stats */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-3">
                   {pageContent.hero.stats.map((stat) => (
                     <div
                       key={stat.label}
                       className="flex flex-col items-center rounded-2xl border border-white/8 bg-brand-900/60 px-1.5 py-3 text-center sm:px-2 sm:py-5"
                     >
-                      <AnimatedNumber
-                        value={stat.value}
-                        reduceMotion={reduceMotion}
-                        splitUnit
-                      />
+                      <AnimatedNumber value={stat.value} reduceMotion={reduceMotion} splitUnit />
                       <p className="mt-2 text-[9px] font-medium leading-snug text-slate-500 sm:mt-3 sm:text-[10px]">
                         {stat.label}
                       </p>
@@ -715,7 +690,7 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -726,7 +701,6 @@ export default function Home() {
           {pageContent.logoBar.label}
         </p>
         {reduceMotion ? (
-          /* Static grid for users who prefer reduced motion */
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
               {LOGOS.map((logo) => (
@@ -742,15 +716,9 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* Animated marquee: logos doubled for seamless CSS loop.
-             dir="ltr" is intentional — the strip is language-agnostic and the
-             translateX(-25%) animation must run LTR regardless of page direction. */
           <div className="relative overflow-hidden" dir="ltr">
-            {/* Fade masks */}
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-brand-900 to-transparent" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-brand-900 to-transparent" />
-            {/* Track: 4× copies so translateX(-25%) = exactly 1 set, robust on any screen */}
-            {/* onTouchEnd: iOS/Android pause CSS animations on touch — restarting fixes the freeze */}
             <div
               ref={marqueeRef}
               className="flex w-max animate-marquee items-center gap-28 py-3"
@@ -758,7 +726,7 @@ export default function Home() {
                 const el = marqueeRef.current;
                 if (!el) return;
                 el.style.animation = 'none';
-                void el.offsetHeight; // force reflow so the browser registers the reset
+                void el.offsetHeight;
                 el.style.animation = '';
               }}
             >
@@ -778,13 +746,10 @@ export default function Home() {
       </div>
 
       {/* ── CHALLENGES ─────────────────────────────────────────────────────── */}
-      <motion.section
+      <section
         id="challenges"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={fadeUp}
-        className="border-t border-white/10 py-16 lg:py-20"
+        ref={challengesRef as React.RefObject<HTMLElement>}
+        className="reveal border-t border-white/10 py-16 lg:py-20"
       >
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="rounded-[2rem] border border-white/10 bg-brand-950/80 p-10 sm:p-14">
@@ -810,16 +775,13 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── OFFERINGS ──────────────────────────────────────────────────────── */}
-      <motion.section
+      <section
         id="offerings"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={fadeUp}
-        className="border-t border-white/10 bg-brand-800/40 py-16"
+        ref={offeringsRef as React.RefObject<HTMLElement>}
+        className="reveal border-t border-white/10 bg-brand-800/40 py-16"
       >
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
@@ -860,16 +822,13 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── WHY ME ─────────────────────────────────────────────────────────── */}
-      <motion.section
+      <section
         id="why-me"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={fadeUp}
-        className="border-t border-white/10 py-16 lg:py-20"
+        ref={whyMeRef as React.RefObject<HTMLElement>}
+        className="reveal border-t border-white/10 py-16 lg:py-20"
       >
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
@@ -917,16 +876,13 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── TESTIMONIALS ───────────────────────────────────────────────────── */}
-      <motion.section
+      <section
         id="testimonials"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={fadeUp}
-        className="border-t border-white/10 bg-brand-800/40 py-16 lg:py-20"
+        ref={testimonialsRef as React.RefObject<HTMLElement>}
+        className="reveal border-t border-white/10 bg-brand-800/40 py-16 lg:py-20"
       >
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mb-10 space-y-3 text-center">
@@ -948,10 +904,7 @@ export default function Home() {
                 className="flex flex-col justify-between rounded-2xl border border-white/10 bg-brand-900/80 p-7 transition hover:border-white/20 hover:shadow-glow-sm hover:shadow-brand-500/12"
               >
                 <blockquote className="text-sm leading-7 text-slate-300">
-                  <span
-                    className="mb-3 block text-2xl leading-none text-brand-400"
-                    aria-hidden="true"
-                  >
+                  <span className="mb-3 block text-2xl leading-none text-brand-400" aria-hidden="true">
                     &ldquo;
                   </span>
                   {t.quote}
@@ -969,16 +922,13 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── PROCESS ────────────────────────────────────────────────────────── */}
-      <motion.section
+      <section
         id="process"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={fadeUp}
-        className="border-t border-white/10 py-16 lg:py-20"
+        ref={processRef as React.RefObject<HTMLElement>}
+        className="reveal border-t border-white/10 py-16 lg:py-20"
       >
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
@@ -1002,7 +952,7 @@ export default function Home() {
                   ? 'התחל בשיחת היכרות, הערך את ההזדמנות יחד, ובחר את מודל ההתקשרות המתאים לצרכיך.'
                   : language === 'ru'
                     ? 'Начните с вводного звонка, оцените возможность вместе и выберите модель взаимодействия, подходящую вашим потребностям.'
-                    : 'Start with an intro call, evaluate the opportunity together, and choose the engagement model that matches your team\'s needs.'}
+                    : "Start with an intro call, evaluate the opportunity together, and choose the engagement model that matches your team's needs."}
               </p>
             </div>
             <div className="rounded-[2rem] border border-white/10 bg-brand-900/60 p-8">
@@ -1025,16 +975,13 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── FAQ ────────────────────────────────────────────────────────────── */}
-      <motion.section
+      <section
         id="faq"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={fadeUp}
-        className="border-t border-white/10 bg-brand-800/40 py-16 lg:py-20"
+        ref={faqRef as React.RefObject<HTMLElement>}
+        className="reveal border-t border-white/10 bg-brand-800/40 py-16 lg:py-20"
       >
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <div className="mb-10 space-y-3 text-center">
@@ -1056,6 +1003,7 @@ export default function Home() {
                 className="overflow-hidden rounded-2xl border border-white/10 bg-brand-900/70"
               >
                 <button
+                  type="button"
                   className="flex w-full items-center justify-between gap-4 p-6 text-left"
                   onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
                   aria-expanded={openFaqIndex === i}
@@ -1065,37 +1013,26 @@ export default function Home() {
                   <span className="text-sm font-bold text-white">{item.question}</span>
                   <Chevron open={openFaqIndex === i} />
                 </button>
-                <AnimatePresence initial={false}>
-                  {openFaqIndex === i && (
-                    <motion.div
-                      id={`faq-a-${i}`}
-                      role="region"
-                      aria-labelledby={`faq-q-${i}`}
-                      key={`faq-answer-${i}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: reduceMotion ? 0 : 0.25, ease: 'easeInOut' }}
-                      className="overflow-hidden"
-                    >
-                      <p className="px-6 pb-6 text-sm leading-7 text-slate-400">{item.answer}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* CSS grid-template-rows accordion — animates open/close both ways */}
+                <div
+                  id={`faq-a-${i}`}
+                  role="region"
+                  aria-labelledby={`faq-q-${i}`}
+                  className={`faq-body ${openFaqIndex === i ? 'open' : ''}`}
+                >
+                  <p className="px-6 pb-6 text-sm leading-7 text-slate-400">{item.answer}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── CONTACT ────────────────────────────────────────────────────────── */}
-      <motion.section
+      <section
         id="contact"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={fadeUp}
-        className="py-16 lg:py-20"
+        ref={contactRef as React.RefObject<HTMLElement>}
+        className="reveal py-16 lg:py-20"
       >
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="rounded-[2rem] border border-brand-600/30 bg-gradient-to-br from-brand-900 to-brand-800/60 p-10 shadow-glow shadow-brand-500/12 sm:p-14">
@@ -1122,12 +1059,14 @@ export default function Home() {
               <div id="contact-cta" className="shrink-0 space-y-3">
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <button
+                    type="button"
                     onClick={() => openCalendly(CALENDLY_INTRO_URL)}
                     className="inline-flex items-center justify-center rounded-full bg-brand-500 px-8 py-4 text-sm font-bold text-white shadow-glow shadow-brand-500/30 transition hover:bg-brand-400"
                   >
                     {pageContent.hero.ctaIntro}
                   </button>
                   <button
+                    type="button"
                     onClick={() => openCalendly(CALENDLY_CONSULT_URL)}
                     className="inline-flex items-center justify-center rounded-full border border-slate-600 bg-slate-950/80 px-8 py-4 text-sm font-bold text-slate-100 transition hover:border-brand-500/60 hover:bg-brand-900/40"
                   >
@@ -1145,7 +1084,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
       <footer className="border-t border-white/10 bg-brand-950/90 py-10">
@@ -1180,7 +1119,6 @@ export default function Home() {
               </a>
             </nav>
           </div>
-          {/* Legal links */}
           <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-white/8 pt-6 text-xs text-slate-400">
             <a href="/accessibility" className="transition hover:text-white">
               {pageContent.legal.accessibility}
@@ -1196,66 +1134,51 @@ export default function Home() {
       </footer>
 
       {/* ── MOBILE STICKY CTA ──────────────────────────────────────────────── */}
-      {/* Outer div is always mounted with stable fixed positioning — no transforms.
-          AnimatePresence + motion.div live INSIDE so the y-animation never
-          interferes with the viewport anchor (iOS Safari fixed+transform bug). */}
-      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
-        <AnimatePresence>
-          {showStickyCTA && (
-            <motion.div
-              key="sticky-cta-inner"
-              initial={{ y: 80, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 80, opacity: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-            >
-              <div className="mx-auto flex max-w-sm gap-3 rounded-full bg-brand-900/95 px-3 py-2.5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
-                <button
-                  onClick={() => openCalendly(CALENDLY_INTRO_URL)}
-                  className="flex-1 rounded-full bg-brand-500 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-brand-400"
-                >
-                  {isRTL ? 'שיחת היכרות' : language === 'ru' ? 'Вводный звонок' : 'Free intro call'}
-                </button>
-                <button
-                  onClick={() => openCalendly(CALENDLY_CONSULT_URL)}
-                  className="flex-1 rounded-full border border-slate-700 px-4 py-3 text-center text-sm font-semibold text-slate-100 transition hover:border-brand-500/50"
-                >
-                  {isRTL ? 'אסטרטגיה' : language === 'ru' ? 'Стратегия' : 'Strategy'}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Outer div always in DOM — CSS transition handles show/hide so iOS Safari
+          fixed+transform viewport anchor bug is avoided (no AnimatePresence mount/unmount) */}
+      <div
+        className={`fixed bottom-4 left-4 right-4 z-40 transition duration-300 md:hidden ${
+          showStickyCTA ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="mx-auto flex max-w-sm gap-3 rounded-full bg-brand-900/95 px-3 py-2.5 shadow-2xl ring-1 ring-white/10 backdrop-blur">
+          <button
+            type="button"
+            onClick={() => openCalendly(CALENDLY_INTRO_URL)}
+            className="flex-1 rounded-full bg-brand-500 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-brand-400"
+          >
+            {isRTL ? 'שיחת היכרות' : language === 'ru' ? 'Вводный звонок' : 'Free intro call'}
+          </button>
+          <button
+            type="button"
+            onClick={() => openCalendly(CALENDLY_CONSULT_URL)}
+            className="flex-1 rounded-full border border-slate-700 px-4 py-3 text-center text-sm font-semibold text-slate-100 transition hover:border-brand-500/50"
+          >
+            {isRTL ? 'אסטרטגיה' : language === 'ru' ? 'Стратегия' : 'Strategy'}
+          </button>
+        </div>
       </div>
 
       {/* ── BACK TO TOP ────────────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {showBackToTop && (
-          <motion.button
-            key="back-to-top"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.2 }}
-            className="fixed bottom-6 right-6 z-30 hidden h-11 w-11 items-center justify-center rounded-full bg-brand-600/90 text-white shadow-glow-sm shadow-brand-500/30 transition hover:bg-brand-500 md:flex"
-            onClick={() =>
-              window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
-            }
-            aria-label="Back to top"
-          >
-            <svg
-              className="h-4 w-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2.5}
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-            </svg>
-          </motion.button>
-        )}
-      </AnimatePresence>
+      <button
+        type="button"
+        className={`fixed bottom-6 right-6 z-30 hidden h-11 w-11 items-center justify-center rounded-full bg-brand-600/90 text-white shadow-glow-sm shadow-brand-500/30 transition duration-200 hover:bg-brand-500 md:flex ${
+          showBackToTop ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.8] pointer-events-none'
+        }`}
+        onClick={() => window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })}
+        aria-label="Back to top"
+      >
+        <svg
+          className="h-4 w-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2.5}
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+      </button>
 
       {/* ── FAQ STRUCTURED DATA ────────────────────────────────────────────── */}
       <script
@@ -1264,72 +1187,59 @@ export default function Home() {
       />
 
       {/* ── CALENDLY MODAL ─────────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {calendlyOpen && (
-          <motion.div
-            key="calendly-modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4"
-            role="dialog"
-            aria-label="Schedule a call with Alla"
-            aria-modal="true"
-          >
-            <div
-              className="absolute inset-0 bg-black/70"
+      <div
+        className={`fixed inset-0 z-50 flex items-end justify-center p-0 transition-opacity duration-200 sm:items-center sm:p-4 ${
+          calendlyOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        role="dialog"
+        aria-label="Schedule a call with Alla"
+        aria-modal="true"
+      >
+        <div
+          className="absolute inset-0 bg-black/70"
+          onClick={() => setCalendlyOpen(false)}
+          aria-hidden="true"
+        />
+        <div
+          className={`relative z-10 w-full max-w-3xl overflow-hidden rounded-t-3xl bg-slate-900 transition duration-300 sm:rounded-2xl ${
+            calendlyOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+          }`}
+        >
+          <div className="flex items-center justify-between border-b border-white/8 px-5 py-4">
+            <p className="text-sm font-semibold text-white">
+              {calendlyUrl === CALENDLY_CONSULT_URL
+                ? isRTL ? 'פגישת אסטרטגיה עם אלה' : language === 'ru' ? 'Стратегическая сессия с Аллой' : 'Strategy Session with Alla'
+                : isRTL ? 'שיחת היכרות חינם עם אלה' : language === 'ru' ? 'Бесплатная встреча с Аллой' : 'Free Intro Call with Alla'}
+            </p>
+            <button
+              type="button"
+              ref={closeCalendlyRef}
               onClick={() => setCalendlyOpen(false)}
-              aria-hidden="true"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 48 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 48 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="relative z-10 w-full max-w-3xl overflow-hidden rounded-t-3xl bg-slate-900 sm:rounded-2xl"
+              aria-label="Close scheduling widget"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-slate-300 hover:bg-white/10"
             >
-              <div className="flex items-center justify-between border-b border-white/8 px-5 py-4">
-                <p className="text-sm font-semibold text-white">
-                  {calendlyUrl === CALENDLY_CONSULT_URL
-                    ? isRTL ? 'פגישת אסטרטגיה עם אלה' : language === 'ru' ? 'Стратегическая сессия с Аллой' : 'Strategy Session with Alla'
-                    : isRTL ? 'שיחת היכרות חינם עם אלה' : language === 'ru' ? 'Бесплатная встреча с Аллой' : 'Free Intro Call with Alla'}
-                </p>
-                <button
-                  ref={closeCalendlyRef}
-                  onClick={() => setCalendlyOpen(false)}
-                  aria-label="Close scheduling widget"
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-slate-300 hover:bg-white/10"
-                >
-                  <svg
-                    className="h-4 w-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              {/* min-h-[750px] ensures Calendly's booking flow renders without its own internal scroll */}
-              <div className="h-[calc(100svh-120px)] min-h-[680px] max-h-[860px]">
-                <iframe
-                  title="Calendly booking"
-                  src={`${calendlyUrl}?embed_domain=rndqueen.com&embed_type=Inline&hide_gdpr_banner=1&background_color=0b1120&text_color=e2e8f0&primary_color=7f5cc6`}
-                  className="h-full w-full border-0"
-                  allow="camera; microphone; fullscreen; autoplay"
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="h-[calc(100svh-120px)] min-h-[680px] max-h-[860px]">
+            <iframe
+              title="Calendly booking"
+              src={`${calendlyUrl}?embed_domain=rndqueen.com&embed_type=Inline&hide_gdpr_banner=1&background_color=0b1120&text_color=e2e8f0&primary_color=7f5cc6`}
+              className="h-full w-full border-0"
+              allow="camera; microphone; fullscreen; autoplay"
+            />
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
