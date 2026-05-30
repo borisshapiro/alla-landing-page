@@ -4,7 +4,7 @@
 **Live URL:** https://rndqueen.com  
 **GitHub repo:** https://github.com/borisshapiro/alla-landing-page  
 **Vercel project:** alla-landing-page (connected to GitHub, auto-deploys on push to `main`)  
-**Last updated:** 2026-05-28 (session 4)
+**Last updated:** 2026-05-30 (session 5)
 
 ---
 
@@ -84,6 +84,12 @@ Full expert-panel review (session 4). All corrections applied:
 - `@vercel/speed-insights` — ✅ live, no config needed
 - `@next/third-parties` GoogleAnalytics — ✅ live (`NEXT_PUBLIC_GA_MEASUREMENT_ID` set in Vercel)
 - GA4 `calendly_open` conversion event fires on every Calendly modal open, tagged `intro_call` vs `strategy_session`
+
+---
+
+## ✅ Performance — fully resolved (session 5)
+
+All Lighthouse scores are 100/100/100/100 on mobile (Slow 4G). No further performance work needed.
 
 ---
 
@@ -195,11 +201,26 @@ All three legal pages now have EN + HE (RTL) + RU sections with a language jump 
 3. **Color contrast** — logo-bar label and footer legal links bumped to `text-slate-400` (~5.8:1, passes WCAG AA).
 4. **WCAG 2.5.3 aria-labels** — language buttons now contain the visible label text in the accessible name.
 
-### Remaining TBT issue
-TBT 570 ms is driven by Framer Motion (1.2 s chunk parse time). Fixing it properly requires splitting the page into Server + Client components. If performance is a priority next session:
-- Extract hero + static sections as RSC (server components)
-- Use `next/dynamic` to lazy-load animated sections below the fold
-- Expected improvement: performance score 90+
+### Session 5 performance refactor (2026-05-30) — COMPLETE
+
+Framer Motion removed from the critical JS path entirely. Final Lighthouse scores (mobile, Slow 4G):
+
+| Metric | Session 3 baseline | Session 5 result |
+|---|---|---|
+| Performance | 66 → ~82 (est) | **100** |
+| Accessibility | 96 | **100** |
+| Best Practices | 100 → 58 (regressed) | **100** |
+| SEO | 100 | **100** |
+| FCP | 1.2 s | **0.9 s** |
+| LCP | 5.3 s → 2 s (after image fix) | **1.7 s** |
+| TBT | 570 ms | **40 ms** |
+| CLS | 0 | **0** |
+
+**Root causes fixed:**
+1. Removed Framer Motion from `page.tsx` — replaced with CSS `@keyframes` + IntersectionObserver
+2. `AccessibilityController` lazy-loaded via `A11yControllerLoader` (`ssr: false`) — Framer Motion now only parses after page is interactive
+3. Removed `animate-fade-up`/`animate-slide-down` from above-fold elements — CSS `animation-fill-mode: both` caused FCP/LCP regression (hero content started at `opacity: 0`)
+4. Calendly iframe now conditionally mounted only when modal is open — previously it loaded on every page view and set third-party cookies, dropping Best Practices from 100 → 58
 
 ---
 
