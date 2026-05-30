@@ -1117,6 +1117,15 @@ export default function Home() {
               >
                 Email
               </a>
+              <a
+                href="https://wa.me/972544395989"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-white"
+                aria-label="Contact on WhatsApp (opens in new tab)"
+              >
+                WhatsApp
+              </a>
             </nav>
           </div>
           <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-white/8 pt-6 text-xs text-slate-400">
