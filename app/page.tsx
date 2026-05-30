@@ -422,7 +422,7 @@ export default function Home() {
 
       {/* ── HEADER ─────────────────────────────────────────────────────────── */}
       <header
-        className="animate-slide-down sticky top-0 z-30 border-b border-white/10 bg-brand-950/95 backdrop-blur-xl"
+        className="sticky top-0 z-30 border-b border-white/10 bg-brand-950/95 backdrop-blur-xl"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 lg:px-8">
           {/* Brand */}
@@ -595,7 +595,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 py-16 sm:py-24 lg:px-8">
           <div className="flex flex-col gap-14 lg:flex-row lg:items-center lg:justify-between">
             {/* Left — headline + CTAs */}
-            <div className="max-w-2xl space-y-8 animate-fade-up">
+            <div className="max-w-2xl space-y-8">
               <p className="inline-flex items-center gap-2 rounded-full border border-brand-500/40 bg-brand-900/70 px-4 py-1.5 text-xs uppercase tracking-[0.28em] text-brand-300">
                 <CrownLogo className="h-3.5 w-3.5" />
                 {pageContent.header.tagline}
@@ -644,7 +644,7 @@ export default function Home() {
             </div>
 
             {/* Right — profile card */}
-            <div className="animate-fade-up-delay rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-glow shadow-brand-500/20 backdrop-blur-xl sm:p-10 lg:w-[38rem]">
+            <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-glow shadow-brand-500/20 backdrop-blur-xl sm:p-10 lg:w-[38rem]">
               <div className="space-y-6">
                 {/* Photo + name */}
                 <div className="flex items-center gap-6">
