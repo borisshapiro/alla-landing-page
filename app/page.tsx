@@ -1230,14 +1230,17 @@ export default function Home() {
               </svg>
             </button>
           </div>
-          <div className="h-[calc(100svh-120px)] min-h-[680px] max-h-[860px]">
-            <iframe
-              title="Calendly booking"
-              src={`${calendlyUrl}?embed_domain=rndqueen.com&embed_type=Inline&hide_gdpr_banner=1&background_color=0b1120&text_color=e2e8f0&primary_color=7f5cc6`}
-              className="h-full w-full border-0"
-              allow="camera; microphone; fullscreen; autoplay"
-            />
-          </div>
+          {/* Mount iframe only when open — prevents Calendly JS/cookies loading on every page view */}
+          {calendlyOpen && (
+            <div className="h-[calc(100svh-120px)] min-h-[680px] max-h-[860px]">
+              <iframe
+                title="Calendly booking"
+                src={`${calendlyUrl}?embed_domain=rndqueen.com&embed_type=Inline&hide_gdpr_banner=1&background_color=0b1120&text_color=e2e8f0&primary_color=7f5cc6`}
+                className="h-full w-full border-0"
+                allow="camera; microphone; fullscreen; autoplay"
+              />
+            </div>
+          )}
         </div>
       </div>
     </main>
